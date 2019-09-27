@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.taleofoverlord.game.Sprites.Player;
 import com.taleofoverlord.game.TaleOfOverlord;
 
 public class PlayScreen implements Screen {
@@ -28,6 +29,8 @@ public class PlayScreen implements Screen {
 
     private World world;
     private Box2DDebugRenderer b2dr;
+
+    private Player player;
 
 
     public PlayScreen(TaleOfOverlord game) {
@@ -66,6 +69,9 @@ public class PlayScreen implements Screen {
             fdef.shape = shape;
             body.createFixture(fdef);
         }
+
+        // Player
+        player = new Player(world);
     }
 
     @Override
@@ -88,6 +94,8 @@ public class PlayScreen implements Screen {
     @Override
     public void render(float delta) {
         update(delta);
+
+        world.step(1/60f, 6, 2);
 
         // Clear Screen
         Gdx.gl.glClearColor(1, 0, 0, 1);
