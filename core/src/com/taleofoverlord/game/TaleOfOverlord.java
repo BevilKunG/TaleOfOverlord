@@ -7,8 +7,8 @@ import com.taleofoverlord.game.Screens.PlayScreen;
 public class TaleOfOverlord extends Game {
 	public SpriteBatch batch;
 
-	public static final int V_WIDTH = 800;
-	public static final int V_HEIGHT = 480;
+	public static final int V_WIDTH = 400;
+	public static final int V_HEIGHT = 208;
 
 	@Override
 	public void create () {
