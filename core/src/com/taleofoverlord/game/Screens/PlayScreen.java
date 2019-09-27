@@ -1,6 +1,7 @@
 package com.taleofoverlord.game.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -38,12 +39,12 @@ public class PlayScreen implements Screen {
 
         // Game Cam and Viewport
         gameCam = new OrthographicCamera();
-        gamePort = new FitViewport(TaleOfOverlord.V_WIDTH, TaleOfOverlord.V_HEIGHT, gameCam);
+        gamePort = new FitViewport(TaleOfOverlord.V_WIDTH / TaleOfOverlord.PPM, TaleOfOverlord.V_HEIGHT / TaleOfOverlord.PPM, gameCam);
 
         // Map
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("level1.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map);
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / TaleOfOverlord.PPM);
 
         // Game Cam Position
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
@@ -62,10 +63,10 @@ public class PlayScreen implements Screen {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / TaleOfOverlord.PPM, (rect.getY() + rect.getHeight() / 2) / TaleOfOverlord.PPM);
 
             body = world.createBody(bdef);
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            shape.setAsBox(rect.getWidth() / 2 / TaleOfOverlord.PPM, rect.getHeight() / 2 / TaleOfOverlord.PPM);
             fdef.shape = shape;
             body.createFixture(fdef);
         }
@@ -80,13 +81,18 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float delta) {
-        if(Gdx.input.isTouched()) {
-            gameCam.position.x += 100 * delta;
-        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
+            player.b2Body.applyLinearImpulse(new Vector2(0, 4f), player.b2Body.getWorldCenter(), true);
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2)
+            player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2)
+            player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
     }
 
     public void update(float delta) {
         handleInput(delta);
+        world.step(1/60f, 6, 2);
+        gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         renderer.setView(gameCam);
     }
@@ -95,10 +101,8 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         update(delta);
 
-        world.step(1/60f, 6, 2);
-
         // Clear Screen
-        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Render Map
