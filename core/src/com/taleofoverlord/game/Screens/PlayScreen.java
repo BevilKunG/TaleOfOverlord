@@ -36,6 +36,8 @@ public class PlayScreen implements Screen {
 
     private Player player;
 
+    private TextureAtlas playerAtlas;
+
 
 
 
@@ -78,6 +80,9 @@ public class PlayScreen implements Screen {
 
         // Player
         player = new Player(world, this);
+
+        playerAtlas = new TextureAtlas("Player.pack");
+
     }
 
     @Override
@@ -119,9 +124,12 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
+//        player.draw(game.batch);
         game.batch.end();
 
         game.batch.setProjectionMatrix(gameCam.combined);
+
+
 
 
     }
@@ -149,5 +157,9 @@ public class PlayScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public TextureAtlas getPlayerAtlas(){
+        return playerAtlas;
     }
 }
