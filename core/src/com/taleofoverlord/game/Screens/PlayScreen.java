@@ -29,23 +29,18 @@ public class PlayScreen implements Screen {
 
     private TmxMapLoader mapLoader;
     private TiledMap map;
-    private OrthogonalTiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer mapRenderer;
 
     private World world;
     private Box2DDebugRenderer b2dr;
 
     private Player player;
 
-    private TextureAtlas atlas;
-
 
 
 
     public PlayScreen(TaleOfOverlord game) {
         this.game = game;
-
-        //Player atlas
-        atlas = new TextureAtlas("player.pack");
 
         // Game Cam and Viewport
         gameCam = new OrthographicCamera();
@@ -54,7 +49,7 @@ public class PlayScreen implements Screen {
         // Map
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("level1.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / TaleOfOverlord.PPM);
+        mapRenderer = new OrthogonalTiledMapRenderer(map, 1 / TaleOfOverlord.PPM);
 
         // Game Cam Position
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
@@ -83,8 +78,6 @@ public class PlayScreen implements Screen {
 
         // Player
         player = new Player(world, this);
-
-
     }
 
     @Override
@@ -104,10 +97,10 @@ public class PlayScreen implements Screen {
     public void update(float delta) {
         handleInput(delta);
         world.step(1/60f, 6, 2);
-        player.update(delta);
+
         gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
-        renderer.setView(gameCam);
+        mapRenderer.setView(gameCam);
     }
 
     @Override
@@ -119,14 +112,13 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Render Map
-        renderer.render();
+        mapRenderer.render();
 
         // render Box2d Debug
         b2dr.render(world, gameCam.combined);
 
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
-        player.draw(game.batch);
         game.batch.end();
 
         game.batch.setProjectionMatrix(gameCam.combined);
@@ -157,9 +149,5 @@ public class PlayScreen implements Screen {
     @Override
     public void dispose() {
 
-    }
-
-    public TextureAtlas getAtlas(){
-        return atlas;
     }
 }

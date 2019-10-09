@@ -11,15 +11,15 @@ public class Player extends Sprite {
     public World world;
     public Body b2Body;
 
-    private TextureRegion playerStand;
+//    private TextureRegion playerStand;
 
     public Player(World world, PlayScreen screen) {
-        super(screen.getAtlas().findRegion("72385462_2417083231953018_9201360505556434944_n"));
+//        super(screen.getAtlas().findRegion("72385462_2417083231953018_9201360505556434944_n"));
         this.world = world;
         definePlayer();
 
-        playerStand = new TextureRegion(getTexture(),0,0,16,16);
-        setRegion(playerStand);
+//        playerStand = new TextureRegion(getTexture(),0,0,16,16);
+//        setRegion(playerStand);
     }
 
     public void definePlayer() {
@@ -37,8 +37,8 @@ public class Player extends Sprite {
         b2Body.createFixture(fdef);
     }
 
-    public void update(float delta){
-        setPosition(b2Body.getPosition().x - getWidth()/2, b2Body.getPosition().y - getHeight() /2);
-
-    }
+//    public void update(float delta){
+//        setPosition(b2Body.getPosition().x - getWidth()/2, b2Body.getPosition().y - getHeight() /2);
+//
+//    }
 }
