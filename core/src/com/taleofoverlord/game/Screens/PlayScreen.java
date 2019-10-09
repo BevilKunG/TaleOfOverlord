@@ -5,8 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -36,13 +34,12 @@ public class PlayScreen implements Screen {
 
     private Player player;
 
-    private TextureAtlas playerAtlas;
-
-
-
+    private TextureAtlas atlas;
 
     public PlayScreen(TaleOfOverlord game) {
         this.game = game;
+
+        atlas = new TextureAtlas("Player.pack");
 
         // Game Cam and Viewport
         gameCam = new OrthographicCamera();
@@ -81,8 +78,6 @@ public class PlayScreen implements Screen {
         // Player
         player = new Player(world, this);
 
-        playerAtlas = new TextureAtlas("Player.pack");
-
     }
 
     @Override
@@ -102,7 +97,7 @@ public class PlayScreen implements Screen {
     public void update(float delta) {
         handleInput(delta);
         world.step(1/60f, 6, 2);
-
+        player.update(delta);
         gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         mapRenderer.setView(gameCam);
@@ -124,7 +119,7 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
-//        player.draw(game.batch);
+        player.draw(game.batch);
         game.batch.end();
 
         game.batch.setProjectionMatrix(gameCam.combined);
@@ -132,6 +127,10 @@ public class PlayScreen implements Screen {
 
 
 
+    }
+
+    public TextureAtlas getAtlas() {
+        return atlas;
     }
 
     @Override
@@ -159,7 +158,4 @@ public class PlayScreen implements Screen {
 
     }
 
-    public TextureAtlas getPlayerAtlas(){
-        return playerAtlas;
-    }
 }
