@@ -1,5 +1,6 @@
 package com.taleofoverlord.game.Tools;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -8,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 public class WorldContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
-
+//        Gdx.app.log("World", "OK");
     }
 
     @Override

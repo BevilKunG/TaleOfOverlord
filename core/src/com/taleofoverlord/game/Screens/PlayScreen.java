@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.taleofoverlord.game.Sprites.Player;
 import com.taleofoverlord.game.TaleOfOverlord;
+import com.taleofoverlord.game.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
     private TaleOfOverlord game;
@@ -56,6 +57,8 @@ public class PlayScreen implements Screen {
         // Box2D
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
+
+        world.setContactListener(new WorldContactListener());
 
         BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
