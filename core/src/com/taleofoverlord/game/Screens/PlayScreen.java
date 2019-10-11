@@ -40,7 +40,7 @@ public class PlayScreen implements Screen {
     public PlayScreen(TaleOfOverlord game) {
         this.game = game;
 
-        atlas = new TextureAtlas("Player.pack");
+        atlas = new TextureAtlas("player_action.pack");
 
         // Game Cam and Viewport
         gameCam = new OrthographicCamera();

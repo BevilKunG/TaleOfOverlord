@@ -37,16 +37,17 @@ public class Player extends Sprite {
         previousState = State.STANDING;
         stateTimer = 0;
         isRunningRight = true;
-
-//        Array<TextureRegion> frames = new Array<TextureRegion>();
-//        for(int i = 1; i <= 4; i++) {
-//            frames.add(new TextureRegion(getTexture(), i * 128, 0, 128, 128));
-//        }
-//        playerRun = new Animation(0.1f, frames);
-//        frames.clear();
+        //
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+        for(int i = 0; i < 4; i++) {
+            frames.add(new TextureRegion(screen.getAtlas().findRegion("player_run"), i * 128, 0, 128, 128));
+        }
+        playerRun = new Animation(0.1f, frames);
+        frames.clear();
+        //
 
         definePlayer();
-        playerStand = new TextureRegion(getTexture(), 0, 0, 128, 128);
+        playerStand = new TextureRegion(getTexture(), 4 * 128, 0, 128, 128);
         setBounds(0, 0, 64 / TaleOfOverlord.PPM, 64 / TaleOfOverlord.PPM);
         setRegion(playerStand);
     }
@@ -60,55 +61,53 @@ public class Player extends Sprite {
 
         // Player Create fixture
         FixtureDef fdef = new FixtureDef();
-//        CircleShape shape = new CircleShape();
-//        shape.setRadius(5 / TaleOfOverlord.PPM);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(24 / TaleOfOverlord.PPM, 32 / TaleOfOverlord.PPM);
         fdef.shape = shape;
         b2Body.createFixture(fdef);
 
         //Player Health Point
-        healthPoint = 100;
+        healthPoint = TaleOfOverlord.PLAYER_MAX_HP;
 
 
     }
 
     public void update(float delta) {
         setPosition(b2Body.getPosition().x - getWidth() / 2, b2Body.getPosition().y - getHeight() / 2);
-//        setRegion(getFrame(delta));
+        setRegion(getFrame(delta));
     }
 
-//    public TextureRegion getFrame(float delta) {
-//        currentState = getState();
-//
-//        TextureRegion region;
-//        switch (currentState) {
-//            case RUNNING: region = (TextureRegion) playerRun.getKeyFrame(stateTimer, true);
-//                break;
-//            case STANDING:
-//            default: region = playerStand;
-//                break;
-//        }
-//
-//        if((b2Body.getLinearVelocity().x < 0 || !isRunningRight) && !region.isFlipX() ) {
-//            region.flip(true, false);
-//            isRunningRight = false;
-//        } else if((b2Body.getLinearVelocity().x > 0 || isRunningRight) && region.isFlipX()) {
-//            region.flip(true, false);
-//            isRunningRight = true;
-//        }
-//
-//        stateTimer = currentState == previousState ? stateTimer+delta : 0;
-//        previousState = currentState;
-//        return region;
-//    }
-//
-//    public State getState() {
-//        if(b2Body.getLinearVelocity().x != 0) {
-//            return State.RUNNING;
-//        } else {
-//            return State.STANDING;
-//        }
-//    }
+    public TextureRegion getFrame(float delta) {
+        currentState = getState();
+
+        TextureRegion region;
+        switch (currentState) {
+            case RUNNING: region = (TextureRegion) playerRun.getKeyFrame(stateTimer, true);
+                break;
+            case STANDING:
+            default: region = playerStand;
+                break;
+        }
+
+        if((b2Body.getLinearVelocity().x < 0 || !isRunningRight) && !region.isFlipX() ) {
+            region.flip(true, false);
+            isRunningRight = false;
+        } else if((b2Body.getLinearVelocity().x > 0 || isRunningRight) && region.isFlipX()) {
+            region.flip(true, false);
+            isRunningRight = true;
+        }
+
+        stateTimer = currentState == previousState ? stateTimer+delta : 0;
+        previousState = currentState;
+        return region;
+    }
+
+    public State getState() {
+        if(b2Body.getLinearVelocity().x != 0) {
+            return State.RUNNING;
+        } else {
+            return State.STANDING;
+        }
+    }
 
 }
