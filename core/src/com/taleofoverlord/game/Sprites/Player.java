@@ -29,9 +29,9 @@ public class Player extends Sprite {
     private boolean isRunningRight;
 
 
-    public Player(World world, PlayScreen screen) {
+    public Player(PlayScreen screen) {
         super(screen.getAtlas().findRegion("player_stand"));
-        this.world = world;
+        this.world = screen.getWorld();
 
         currentState = State.STANDING;
         previousState = State.STANDING;
@@ -64,7 +64,7 @@ public class Player extends Sprite {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(24 / TaleOfOverlord.PPM, 32 / TaleOfOverlord.PPM);
         fdef.shape = shape;
-        b2Body.createFixture(fdef);
+        b2Body.createFixture(fdef).setUserData("player");
 
         //Player Health Point
         healthPoint = TaleOfOverlord.PLAYER_MAX_HP;
@@ -108,6 +108,10 @@ public class Player extends Sprite {
         } else {
             return State.STANDING;
         }
+    }
+
+    public void decreaseHealthPoint(int damage) {
+        healthPoint-=damage;
     }
 
 }

@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.taleofoverlord.game.Sprites.Boss;
 import com.taleofoverlord.game.Sprites.Player;
 import com.taleofoverlord.game.TaleOfOverlord;
 import com.taleofoverlord.game.Tools.WorldContactListener;
@@ -34,6 +35,7 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer b2dr;
 
     private Player player;
+    private Boss boss;
 
     private TextureAtlas atlas;
 
@@ -78,8 +80,9 @@ public class PlayScreen implements Screen {
             body.createFixture(fdef);
         }
 
-        // Player
-        player = new Player(world, this);
+        // Player and Boss
+        player = new Player( this);
+        boss = new Boss(this);
 
     }
 
@@ -134,6 +137,10 @@ public class PlayScreen implements Screen {
 
     public TextureAtlas getAtlas() {
         return atlas;
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     @Override

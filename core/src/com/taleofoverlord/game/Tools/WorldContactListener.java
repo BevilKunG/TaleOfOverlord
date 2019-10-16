@@ -1,15 +1,22 @@
 package com.taleofoverlord.game.Tools;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.*;
+import com.taleofoverlord.game.Sprites.Boss;
 
 public class WorldContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
-//        Gdx.app.log("World", "OK");
+//        Fixture fixA = contact.getFixtureA();
+//        Fixture fixB = contact.getFixtureB();
+//
+//        if(fixA.getUserData() == "player" || fixB.getUserData() == "player") {
+//            Fixture player = fixA.getUserData() == "player" ? fixA : fixB;
+//            Fixture boss = player == fixA ? fixB : fixA;
+//            if(Boss.class.isAssignableFrom((Class<?>) boss.getUserData())) {
+//                ((Boss) boss.getUserData()).chout();
+//            }
+//        }
     }
 
     @Override

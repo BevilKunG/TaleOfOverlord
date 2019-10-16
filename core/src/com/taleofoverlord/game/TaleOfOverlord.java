@@ -11,6 +11,7 @@ public class TaleOfOverlord extends Game {
 	public static final int V_HEIGHT = 200;
 	public static final float PPM = 100; // Scaling Pixel
 	public static final int PLAYER_MAX_HP = 100;
+	public static final int BOSS_MAX_HP = 1000;
 
 	@Override
 	public void create () {
