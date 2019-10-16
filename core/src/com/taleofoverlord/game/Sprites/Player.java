@@ -47,7 +47,7 @@ public class Player extends Sprite {
         //
 
         definePlayer();
-        playerStand = new TextureRegion(getTexture(), 4 * 128, 0, 128, 128);
+        playerStand = new TextureRegion(getTexture(), 0, 0, 128, 128);
         setBounds(0, 0, 64 / TaleOfOverlord.PPM, 64 / TaleOfOverlord.PPM);
         setRegion(playerStand);
     }
