@@ -9,16 +9,21 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.taleofoverlord.game.Screens.PlayScreen;
 import com.taleofoverlord.game.TaleOfOverlord;
 
-public class Boss extends Sprite {
+public class Boss extends Fighter {
     public World world;
     public Body b2body;
 
-    private static int healthPoint;
-
     private TextureRegion bossStand;
+
+    @Override
+    public Vector2 getFrontPosition() {
+        return null;
+    }
+
     public enum State { STANDING };
 
     public Boss(PlayScreen screen) {
+        super(screen.getAtlas().findRegion("player_stand"),false);
 //        super(screen.getAtlas().findRegion(""));
         this.world = screen.getWorld();
         defineBoss();
@@ -26,7 +31,7 @@ public class Boss extends Sprite {
 
     public void defineBoss() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(new Vector2(1024 / TaleOfOverlord.PPM, 32 / TaleOfOverlord.PPM));
+        bdef.position.set(new Vector2(64 / TaleOfOverlord.PPM, 32 / TaleOfOverlord.PPM));
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -34,9 +39,13 @@ public class Boss extends Sprite {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(24 / TaleOfOverlord.PPM, 32 / TaleOfOverlord.PPM);
         fdef.shape = shape;
-        b2body.createFixture(fdef).setUserData("boss");
+        b2body.createFixture(fdef).setUserData(this);
 
-        healthPoint = TaleOfOverlord.BOSS_MAX_HP;
+        super.setHealthPoint(TaleOfOverlord.BOSS_MAX_HP);
+    }
+
+    public void update() {
+//        Gdx.app.log("HP", " "+ super.getHealthPoint());
     }
 
 }

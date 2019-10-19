@@ -14,9 +14,12 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.taleofoverlord.game.Sprites.Boss;
+import com.taleofoverlord.game.Sprites.Bullet;
 import com.taleofoverlord.game.Sprites.Player;
 import com.taleofoverlord.game.TaleOfOverlord;
 import com.taleofoverlord.game.Tools.WorldContactListener;
@@ -36,6 +39,7 @@ public class PlayScreen implements Screen {
 
     private Player player;
     private Boss boss;
+    private Array<Bullet> bullets;
 
     private TextureAtlas atlas;
 
@@ -77,12 +81,13 @@ public class PlayScreen implements Screen {
             body = world.createBody(bdef);
             shape.setAsBox(rect.getWidth() / 2 / TaleOfOverlord.PPM, rect.getHeight() / 2 / TaleOfOverlord.PPM);
             fdef.shape = shape;
-            body.createFixture(fdef);
+            body.createFixture(fdef).setUserData("ground");
         }
 
         // Player and Boss
         player = new Player( this);
-        boss = new Boss(this);
+//        boss = new Boss(this);
+        bullets = new Array<Bullet>();
 
     }
 
@@ -99,14 +104,30 @@ public class PlayScreen implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2)
             player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             player.shoot();
+            bullets.add(new Bullet(this, player, boss));
+        }
+
+    }
+
+    public void handleBullet() {
+        for(Bullet bullet:bullets) {
+            if(bullet.checkIsFinished()) {
+                bullets.removeValue(bullet, true);
+                world.destroyBody(bullet.b2body);
+                bullet = null;
+            }
+        }
+        Gdx.app.log("n"," "+bullets.size);
     }
 
     public void update(float delta) {
         handleInput(delta);
+        handleBullet();
         world.step(1/60f, 6, 2);
         player.update(delta);
+//        boss.update();
         gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         mapRenderer.setView(gameCam);
@@ -145,6 +166,8 @@ public class PlayScreen implements Screen {
     public World getWorld() {
         return world;
     }
+
+    public Player getPlayer() { return player; }
 
     @Override
     public void resize(int width, int height) {
