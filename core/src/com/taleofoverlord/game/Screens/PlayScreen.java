@@ -54,7 +54,7 @@ public class PlayScreen implements Screen {
 
         // Map
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("level1.tmx");
+        map = mapLoader.load("level2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map, 1 / TaleOfOverlord.PPM);
 
         // Game Cam Position
