@@ -1,8 +1,6 @@
 package com.taleofoverlord.game.Sprites;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -11,7 +9,7 @@ import com.taleofoverlord.game.TaleOfOverlord;
 
 public class Boss extends Fighter {
     public World world;
-    public Body b2body;
+    public Body b2Body;
 
     private TextureRegion bossStand;
 
@@ -33,19 +31,19 @@ public class Boss extends Fighter {
         BodyDef bdef = new BodyDef();
         bdef.position.set(new Vector2(64 / TaleOfOverlord.PPM, 32 / TaleOfOverlord.PPM));
         bdef.type = BodyDef.BodyType.DynamicBody;
-        b2body = world.createBody(bdef);
+        b2Body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(24 / TaleOfOverlord.PPM, 32 / TaleOfOverlord.PPM);
         fdef.shape = shape;
-        b2body.createFixture(fdef).setUserData(this);
+        b2Body.createFixture(fdef).setUserData(this);
 
         super.setHealthPoint(TaleOfOverlord.BOSS_MAX_HP);
     }
 
     public void update() {
-//        Gdx.app.log("HP", " "+ super.getHealthPoint());
+        Gdx.app.log("HP", " "+ super.getHealthPoint());
     }
 
 }

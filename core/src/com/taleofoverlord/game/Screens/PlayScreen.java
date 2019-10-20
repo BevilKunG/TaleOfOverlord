@@ -110,7 +110,7 @@ public class PlayScreen implements Screen {
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            player.slash();
+            player.slash(boss);
         }
 
     }
@@ -131,7 +131,7 @@ public class PlayScreen implements Screen {
         handleBullet();
         world.step(1/60f, 6, 2);
         player.update(delta);
-//        boss.update();
+        boss.update();
         gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         mapRenderer.setView(gameCam);

@@ -19,7 +19,7 @@ public class Player extends Fighter {
 
 
     private TextureRegion playerStand;
-    private Animation playerRun, playerShoot;
+    private Animation playerRun, playerShoot, playerSlash;
 
     public enum State { STANDING, RUNNING, SHOOTING, SLASHING}
     public State currentState;
@@ -39,6 +39,7 @@ public class Player extends Fighter {
         previousState = State.STANDING;
         stateTimer = 0;
         //
+        //Run
         Array<TextureRegion> frames = new Array<TextureRegion>();
         for(int i = 0; i < 4; i++) {
             frames.add(new TextureRegion(screen.getAtlas().findRegion("player_run"), i * 128, 0, 128, 128));
@@ -46,11 +47,20 @@ public class Player extends Fighter {
         playerRun = new Animation(0.25f, frames);
         frames.clear();
 
+        //Shoot
         isShooting = false;
         for (int i = 1; i < 4; i++) {
             frames.add(new TextureRegion(screen.getAtlas().findRegion("player_shoot"), i * 128, 0, 128, 128));
         }
         playerShoot = new Animation(0.1f, frames);
+        frames.clear();
+
+        //Slash
+        isSlashing = false;
+        for (int i = 1; i < 3; i++) {
+            frames.add(new TextureRegion(screen.getAtlas().findRegion("player_slash"), i * 128, 0, 128, 128));
+        }
+        playerSlash = new Animation(0.1f, frames);
         frames.clear();
         //
 
@@ -98,7 +108,7 @@ public class Player extends Fighter {
                 break;
             case SHOOTING: region = (TextureRegion) playerShoot.getKeyFrame(stateTimer, false);
                 break;
-            case SLASHING: region = (TextureRegion) playerRun.getKeyFrame(stateTimer, true);
+            case SLASHING: region = (TextureRegion) playerSlash.getKeyFrame(stateTimer, false);
             break;
             case STANDING:
             default: region = playerStand;
@@ -148,16 +158,21 @@ public class Player extends Fighter {
         }, 0.5f);
     }
 
-    public void slash() {
+    public void slash(Boss boss) {
         isSlashing = true;
-
-//        if(b2Body.getPosition().dst(boss.b2Body.getPosition()) >=-5 || b2Body.getPosition().dst(boss.b2Body.getPosition()) <=5) boss.decreaseHealthPoint(10);
+//        Gdx.app.log("dst",""+b2Body.getPosition().dst(boss.b2Body.getPosition()));
+//        Gdx.app.log("angle","" + getFrontPosition().angle(new Vector2(b2Body.getPosition().x - boss.b2Body.getPosition().x, b2Body.getPosition().y - boss.b2Body.getPosition().y)));
+        if(b2Body.getPosition().dst(boss.b2Body.getPosition()) <= TaleOfOverlord.SLASH_RANGE) {
+            //Must check front of player is boss
+//            float angle = getFrontPosition().angle(new Vector2(b2Body.getPosition().x - boss.b2Body.getPosition().x, b2Body.getPosition().y - boss.b2Body.getPosition().y));
+                boss.decreaseHealthPoint(TaleOfOverlord.SLASH_DAMAGE);
+        }
 
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 isSlashing = false;
             }
-        }, 0.5f);
+        }, 0.3f);
     }
 }
