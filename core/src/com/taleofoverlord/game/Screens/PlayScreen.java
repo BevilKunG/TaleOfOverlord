@@ -86,7 +86,7 @@ public class PlayScreen implements Screen {
 
         // Player and Boss
         player = new Player( this);
-//        boss = new Boss(this);
+        boss = new Boss(this);
         bullets = new Array<Bullet>();
 
     }
@@ -109,6 +109,10 @@ public class PlayScreen implements Screen {
             bullets.add(new Bullet(this, player, boss));
         }
 
+        if(Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            player.slash();
+        }
+
     }
 
     public void handleBullet() {
@@ -119,7 +123,7 @@ public class PlayScreen implements Screen {
                 bullet = null;
             }
         }
-        Gdx.app.log("n"," "+bullets.size);
+//        Gdx.app.log("n"," "+bullets.size);
     }
 
     public void update(float delta) {

@@ -21,14 +21,14 @@ public class Player extends Fighter {
     private TextureRegion playerStand;
     private Animation playerRun, playerShoot;
 
-    public enum State { STANDING, RUNNING, SHOOTING}
+    public enum State { STANDING, RUNNING, SHOOTING, SLASHING}
     public State currentState;
     public State previousState;
 
     public float stateTimer;
 
-//    private boolean isRunningRight;
     private boolean isShooting;
+    private boolean isSlashing;
 
 
     public Player(PlayScreen screen) {
@@ -98,6 +98,8 @@ public class Player extends Fighter {
                 break;
             case SHOOTING: region = (TextureRegion) playerShoot.getKeyFrame(stateTimer, false);
                 break;
+            case SLASHING: region = (TextureRegion) playerRun.getKeyFrame(stateTimer, true);
+            break;
             case STANDING:
             default: region = playerStand;
                 break;
@@ -120,6 +122,8 @@ public class Player extends Fighter {
     public State getState() {
         if(isShooting) {
             return State.SHOOTING;
+        } else if(isSlashing) {
+            return State.SLASHING;
         } else if(b2Body.getLinearVelocity().x >= TaleOfOverlord.FLIP_EPSILON || b2Body.getLinearVelocity().x <= -TaleOfOverlord.FLIP_EPSILON) {
             return State.RUNNING;
         } else {
@@ -140,6 +144,19 @@ public class Player extends Fighter {
             @Override
             public void run() {
                 isShooting = false;
+            }
+        }, 0.5f);
+    }
+
+    public void slash() {
+        isSlashing = true;
+
+//        if(b2Body.getPosition().dst(boss.b2Body.getPosition()) >=-5 || b2Body.getPosition().dst(boss.b2Body.getPosition()) <=5) boss.decreaseHealthPoint(10);
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                isSlashing = false;
             }
         }, 0.5f);
     }
