@@ -3,23 +3,58 @@ player.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+player_die
+  rotate: false
+  xy: 1, 651
+  size: 512, 128
+  orig: 512, 128
+  offset: 0, 0
+  index: -1
+player_hurt
+  rotate: false
+  xy: 1, 521
+  size: 512, 128
+  orig: 512, 128
+  offset: 0, 0
+  index: -1
 player_run
   rotate: false
-  xy: 1, 131
+  xy: 1, 391
   size: 512, 128
   orig: 512, 128
   offset: 0, 0
   index: -1
 player_shoot
   rotate: false
-  xy: 1, 1
+  xy: 1, 261
   size: 512, 128
   orig: 512, 128
   offset: 0, 0
   index: -1
+player_punch
+  rotate: false
+  xy: 515, 651
+  size: 384, 128
+  orig: 384, 128
+  offset: 0, 0
+  index: -1
+player_slash
+  rotate: false
+  xy: 1, 131
+  size: 384, 128
+  orig: 384, 128
+  offset: 0, 0
+  index: -1
+player_jump
+  rotate: false
+  xy: 515, 521
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
 player_stand
   rotate: false
-  xy: 515, 131
+  xy: 1, 1
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
