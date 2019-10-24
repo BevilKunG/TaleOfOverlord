@@ -18,10 +18,10 @@ public class Player extends Fighter {
     public Body b2Body;
 
 
-    private TextureRegion playerStand;
+    private TextureRegion playerStand, playerJump;
     private Animation playerRun, playerShoot, playerSlash, playerPunch;
 
-    public enum State { STANDING, RUNNING, SHOOTING, SLASHING, PUNCHING}
+    public enum State { STANDING, RUNNING, JUMPING, SHOOTING, SLASHING, PUNCHING}
     public State currentState;
     public State previousState;
 
@@ -75,6 +75,7 @@ public class Player extends Fighter {
 
         define();
         playerStand = new TextureRegion(getTexture(), 0, 0, 128, 128);
+        playerJump = new TextureRegion(screen.getAtlas().findRegion("player_jump"), 128, 0, 128, 128);
         setBounds(0, 0, 64 / TaleOfOverlord.PPM, 64 / TaleOfOverlord.PPM);
         setRegion(playerStand);
     }
@@ -115,6 +116,8 @@ public class Player extends Fighter {
         switch (currentState) {
             case RUNNING: region = (TextureRegion) playerRun.getKeyFrame(stateTimer, true);
                 break;
+            case JUMPING: region = playerJump;
+                break;
             case SHOOTING: region = (TextureRegion) playerShoot.getKeyFrame(stateTimer, false);
                 break;
             case SLASHING: region = (TextureRegion) playerSlash.getKeyFrame(stateTimer, false);
@@ -148,7 +151,10 @@ public class Player extends Fighter {
         }
         else if(isPunching) {
             return State.PUNCHING;
-        }else if(b2Body.getLinearVelocity().x >= TaleOfOverlord.FLIP_EPSILON || b2Body.getLinearVelocity().x <= -TaleOfOverlord.FLIP_EPSILON) {
+        } else if(b2Body.getLinearVelocity().y > 0){
+            Gdx.app.log("OK", "JUMP");
+            return State.JUMPING;
+        } else if(b2Body.getLinearVelocity().x >= TaleOfOverlord.FLIP_EPSILON || b2Body.getLinearVelocity().x <= -TaleOfOverlord.FLIP_EPSILON) {
             return State.RUNNING;
         } else {
             return State.STANDING;
@@ -192,5 +198,9 @@ public class Player extends Fighter {
                 isPunching = false;
             }
         }, 0.3f);
+    }
+
+    public boolean checkIsJumping() {
+        return currentState == State.JUMPING;
     }
 }

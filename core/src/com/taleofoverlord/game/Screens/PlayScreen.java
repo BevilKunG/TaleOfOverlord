@@ -98,7 +98,7 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float delta) {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.b2Body.getLinearVelocity().y == 0)
             player.b2Body.applyLinearImpulse(new Vector2(0, 4f), player.b2Body.getWorldCenter(), true);
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2)
             player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
@@ -159,7 +159,7 @@ public class PlayScreen implements Screen {
         handlePunch();
         world.step(1/60f, 6, 2);
         player.update(delta);
-        boss.update();
+//        boss.update();
         gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         mapRenderer.setView(gameCam);
