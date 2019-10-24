@@ -1,58 +1,50 @@
 package com.taleofoverlord.game.Sprites;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
 import com.taleofoverlord.game.Screens.PlayScreen;
 import com.taleofoverlord.game.TaleOfOverlord;
 
-public class Bullet extends Sprite {
+public class SlashedSword {
     public World world;
     public Body b2Body;
 
-//    public Player player;
-
-    private Fighter shooter;
+    private Fighter slasher;
     private Fighter target;
     private int damage;
     private boolean isFinished;
 
-    public Bullet(PlayScreen screen,Fighter shooter, Fighter target) {
+    public SlashedSword(PlayScreen screen, Fighter slasher, Fighter target) {
         this.world = screen.getWorld();
-        this.shooter = shooter;
+        this.slasher = slasher;
         this.target = target;
 
         define();
     }
 
     public void define() {
-        damage = TaleOfOverlord.BULLET_DAMAGE;
+        damage = TaleOfOverlord.SLASH_DAMAGE;
         isFinished = false;
 
         BodyDef bdef = new BodyDef();
-        bdef.position.set(shooter.getFrontPosition());
+        bdef.position.set(slasher.getFrontPosition());
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2Body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(5 / TaleOfOverlord.PPM);
+        EdgeShape shape = new EdgeShape();
+        shape.set(new Vector2(0, 0), new Vector2( TaleOfOverlord.SLASH_RANGE * (slasher.checkIsRunningRight()? 1:-1), 0));
         fdef.shape = shape;
         b2Body.createFixture(fdef).setUserData(this);
 
         b2Body.setGravityScale(0);
-        b2Body.setLinearVelocity(new Vector2(4.0f * (shooter.checkIsRunningRight()? 1 : -1), 0));
-
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 isFinished = true;
             }
-        }, 0.5f);
-    }
-
-    public void update() {
+        }, 0.3f);
     }
 
     public Fighter getTarget() {
@@ -70,5 +62,4 @@ public class Bullet extends Sprite {
     public boolean checkIsFinished() {
         return isFinished;
     }
-
 }

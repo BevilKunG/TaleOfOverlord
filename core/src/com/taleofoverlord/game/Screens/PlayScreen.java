@@ -15,12 +15,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.taleofoverlord.game.Sprites.Boss;
-import com.taleofoverlord.game.Sprites.Bullet;
-import com.taleofoverlord.game.Sprites.Player;
+import com.taleofoverlord.game.Sprites.*;
 import com.taleofoverlord.game.TaleOfOverlord;
 import com.taleofoverlord.game.Tools.WorldContactListener;
 
@@ -40,6 +37,8 @@ public class PlayScreen implements Screen {
     private Player player;
     private Boss boss;
     private Array<Bullet> bullets;
+    private Array<SlashedSword> slashedSwords;
+    private Array<Punch> punches;
 
     private TextureAtlas atlas;
 
@@ -88,6 +87,8 @@ public class PlayScreen implements Screen {
         player = new Player( this);
         boss = new Boss(this);
         bullets = new Array<Bullet>();
+        slashedSwords = new Array<SlashedSword>();
+        punches = new Array<Punch>();
 
     }
 
@@ -110,7 +111,13 @@ public class PlayScreen implements Screen {
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            player.slash(boss);
+            player.slash();
+            slashedSwords.add(new SlashedSword(this, player, boss));
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            player.punch();
+            punches.add(new Punch(this, player, boss));
         }
 
     }
@@ -119,16 +126,37 @@ public class PlayScreen implements Screen {
         for(Bullet bullet:bullets) {
             if(bullet.checkIsFinished()) {
                 bullets.removeValue(bullet, true);
-                world.destroyBody(bullet.b2body);
+                world.destroyBody(bullet.b2Body);
                 bullet = null;
             }
         }
-//        Gdx.app.log("n"," "+bullets.size);
+    }
+
+    public void handlePunch() {
+        for(Punch punch:punches) {
+            if(punch.checkIsFinished()) {
+                punches.removeValue(punch, true);
+                world.destroyBody(punch.b2Body);
+                punch = null;
+            }
+        }
+    }
+
+    public void handleSlashedSword() {
+        for(SlashedSword slashedSword:slashedSwords) {
+            if(slashedSword.checkIsFinished()) {
+                slashedSwords.removeValue(slashedSword, true);
+                world.destroyBody(slashedSword.b2Body);
+                slashedSword = null;
+            }
+        }
     }
 
     public void update(float delta) {
         handleInput(delta);
         handleBullet();
+        handleSlashedSword();
+        handlePunch();
         world.step(1/60f, 6, 2);
         player.update(delta);
         boss.update();

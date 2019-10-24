@@ -13,9 +13,11 @@ public class TaleOfOverlord extends Game {
 	public static final int PLAYER_MAX_HP = 100;
 	public static final int BOSS_MAX_HP = 1000;
 	public static final float FLIP_EPSILON = 0.01f;
-	public static final int SLASH_DAMAGE = 5;
-	public static final int BULLET_DAMAGE = 10;
-	public static final float SLASH_RANGE = 0.5f;
+	public static final int SLASH_DAMAGE = 10;
+	public static final int BULLET_DAMAGE = 20;
+	public static final int PUNCH_DAMAGE = 5;
+	public static final float SLASH_RANGE = 0.18f;
+	public static final float PUNCH_RANGE = 0.15f;
 
 	@Override
 	public void create () {
