@@ -29,7 +29,7 @@ public class Boss extends Fighter {
 
     public void defineBoss() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(new Vector2(64 / TaleOfOverlord.PPM, 32 / TaleOfOverlord.PPM));
+        bdef.position.set(new Vector2(512 / TaleOfOverlord.PPM, 64 / TaleOfOverlord.PPM));
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2Body = world.createBody(bdef);
 
@@ -43,7 +43,7 @@ public class Boss extends Fighter {
     }
 
     public void update() {
-        Gdx.app.log("HP", " "+ super.getHealthPoint());
+//        Gdx.app.log("HP", " "+ super.getHealthPoint());
     }
 
 }
