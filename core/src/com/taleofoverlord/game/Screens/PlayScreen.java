@@ -40,12 +40,14 @@ public class PlayScreen implements Screen {
     private Array<SlashedSword> slashedSwords;
     private Array<Punch> punches;
 
-    private TextureAtlas atlas;
+    private TextureAtlas playerAtlas;
+    private TextureAtlas bossAtlas;
 
     public PlayScreen(TaleOfOverlord game) {
         this.game = game;
 
-        atlas = new TextureAtlas("player.pack");
+        playerAtlas = new TextureAtlas("player.pack");
+        bossAtlas = new TextureAtlas("boss.pack");
 
         // Game Cam and Viewport
         gameCam = new OrthographicCamera();
@@ -159,7 +161,7 @@ public class PlayScreen implements Screen {
         handlePunch();
         world.step(1/60f, 6, 2);
         player.update(delta);
-//        boss.update();
+        boss.update(delta);
         gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         mapRenderer.setView(gameCam);
@@ -182,6 +184,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
+        boss.draw(game.batch);
         game.batch.end();
 
         game.batch.setProjectionMatrix(gameCam.combined);
@@ -191,8 +194,11 @@ public class PlayScreen implements Screen {
 
     }
 
-    public TextureAtlas getAtlas() {
-        return atlas;
+    public TextureAtlas getPlayerAtlas() {
+        return playerAtlas;
+    }
+    public TextureAtlas getBossAtlas() {
+        return bossAtlas;
     }
 
     public World getWorld() {

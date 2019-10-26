@@ -1,9 +1,7 @@
 package com.taleofoverlord.game.Sprites;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -33,7 +31,7 @@ public class Player extends Fighter {
 
 
     public Player(PlayScreen screen) {
-        super(screen.getAtlas().findRegion("player_stand"), true);
+        super(screen.getPlayerAtlas().findRegion("player_stand"), true);
         this.world = screen.getWorld();
 
         currentState = State.STANDING;
@@ -43,7 +41,7 @@ public class Player extends Fighter {
         //Run
         Array<TextureRegion> frames = new Array<TextureRegion>();
         for(int i = 0; i < 4; i++) {
-            frames.add(new TextureRegion(screen.getAtlas().findRegion("player_run"), i * 128, 0, 128, 128));
+            frames.add(new TextureRegion(screen.getPlayerAtlas().findRegion("player_run"), i * 128, 0, 128, 128));
         }
         playerRun = new Animation(0.25f, frames);
         frames.clear();
@@ -51,7 +49,7 @@ public class Player extends Fighter {
         //Shoot
         isShooting = false;
         for (int i = 1; i < 4; i++) {
-            frames.add(new TextureRegion(screen.getAtlas().findRegion("player_shoot"), i * 128, 0, 128, 128));
+            frames.add(new TextureRegion(screen.getPlayerAtlas().findRegion("player_shoot"), i * 128, 0, 128, 128));
         }
         playerShoot = new Animation(0.1f, frames);
         frames.clear();
@@ -59,7 +57,7 @@ public class Player extends Fighter {
         //Slash
         isSlashing = false;
         for (int i = 1; i < 3; i++) {
-            frames.add(new TextureRegion(screen.getAtlas().findRegion("player_slash"), i * 128, 0, 128, 128));
+            frames.add(new TextureRegion(screen.getPlayerAtlas().findRegion("player_slash"), i * 128, 0, 128, 128));
         }
         playerSlash = new Animation(0.1f, frames);
         frames.clear();
@@ -67,7 +65,7 @@ public class Player extends Fighter {
         //Punch
         isPunching = false;
         for (int i = 1; i < 3; i++) {
-            frames.add(new TextureRegion(screen.getAtlas().findRegion("player_punch"), i * 128, 0, 128, 128));
+            frames.add(new TextureRegion(screen.getPlayerAtlas().findRegion("player_punch"), i * 128, 0, 128, 128));
         }
         playerPunch = new Animation(0.1f, frames);
         frames.clear();
@@ -75,7 +73,7 @@ public class Player extends Fighter {
 
         define();
         playerStand = new TextureRegion(getTexture(), 0, 0, 128, 128);
-        playerJump = new TextureRegion(screen.getAtlas().findRegion("player_jump"), 128, 0, 128, 128);
+        playerJump = new TextureRegion(screen.getPlayerAtlas().findRegion("player_jump"), 128, 0, 128, 128);
         setBounds(0, 0, 64 / TaleOfOverlord.PPM, 64 / TaleOfOverlord.PPM);
         setRegion(playerStand);
     }
