@@ -3,9 +3,44 @@ boss.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-boss_stand
+boss_shoot1
+  rotate: false
+  xy: 1, 521
+  size: 670, 127
+  orig: 670, 127
+  offset: 0, 0
+  index: -1
+boss_blink
+  rotate: false
+  xy: 1, 391
+  size: 640, 128
+  orig: 640, 128
+  offset: 0, 0
+  index: -1
+boss_prepareBlink
+  rotate: false
+  xy: 1, 261
+  size: 640, 128
+  orig: 640, 128
+  offset: 0, 0
+  index: -1
+boss_shoot2
+  rotate: false
+  xy: 1, 131
+  size: 491, 128
+  orig: 491, 128
+  offset: 0, 0
+  index: -1
+boss_melee
   rotate: false
   xy: 1, 1
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
+boss_stand
+  rotate: false
+  xy: 494, 131
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
