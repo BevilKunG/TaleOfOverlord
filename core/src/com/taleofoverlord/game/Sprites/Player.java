@@ -150,7 +150,7 @@ public class Player extends Fighter {
         else if(isPunching) {
             return State.PUNCHING;
         } else if(b2Body.getLinearVelocity().y > TaleOfOverlord.JUMP_EPSILON){
-            Gdx.app.log("OK", "JUMP");
+//            Gdx.app.log("OK", "JUMP");
             return State.JUMPING;
         } else if(b2Body.getLinearVelocity().x >= TaleOfOverlord.FLIP_EPSILON || b2Body.getLinearVelocity().x <= -TaleOfOverlord.FLIP_EPSILON) {
             return State.RUNNING;

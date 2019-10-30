@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.taleofoverlord.game.Scenes.Hud;
 import com.taleofoverlord.game.Sprites.*;
 import com.taleofoverlord.game.TaleOfOverlord;
 import com.taleofoverlord.game.Tools.WorldContactListener;
@@ -43,8 +44,12 @@ public class PlayScreen implements Screen {
     private TextureAtlas playerAtlas;
     private TextureAtlas bossAtlas;
 
+    private Hud hud;
+
     public PlayScreen(TaleOfOverlord game) {
         this.game = game;
+
+        hud = new Hud();
 
         playerAtlas = new TextureAtlas("player.pack");
         bossAtlas = new TextureAtlas("boss.pack");
@@ -175,6 +180,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+
         // Render Map
         mapRenderer.render();
 
@@ -185,6 +191,7 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         player.draw(game.batch);
         boss.draw(game.batch);
+
         game.batch.end();
 
         game.batch.setProjectionMatrix(gameCam.combined);
