@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.5" orientation="orthogonal" renderorder="right-down" width="50" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="129">
+<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="right-down" width="50" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="20" nextobjectid="130">
  <tileset firstgid="1" name="tileset_gutter" tilewidth="16" tileheight="16" spacing="2" margin="1" tilecount="924" columns="33">
   <image source="tileset_gutter.png" width="594" height="504"/>
   <tile id="0">
@@ -111,9 +111,10 @@
    </properties>
   </tile>
  </tileset>
+ <tileset firstgid="925" source="tileset_gutter.tsx"/>
  <layer id="15" name="Background Color" width="50" height="15">
   <data encoding="base64" compression="zlib">
-   eJztw7EJAAAIA7Dq/x938Q9JIN2kqqr69OTHAzp6tB0=
+   eJztw7EJAAAIA7Di/x930TskkHSSqqrq0+fFBU5mtE8=
   </data>
  </layer>
  <layer id="17" name="graphic layer" width="50" height="15">
