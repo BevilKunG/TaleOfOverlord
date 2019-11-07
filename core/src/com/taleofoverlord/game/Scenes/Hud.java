@@ -4,25 +4,27 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.taleofoverlord.game.Screens.PlayScreen;
 import com.taleofoverlord.game.TaleOfOverlord;
 
 public class Hud extends Sprite{
-//    public Stage stage;
-//    private Viewport viewport;
-//
     private Sprite playerHPBar;
-
-    public Hud() {
-//        viewport = new FitViewport(TaleOfOverlord.V_WIDTH, TaleOfOverlord.V_HEIGHT, new OrthographicCamera());
-//        stage = new Stage(viewport, sb);
-//
-//        playerHPBar = new Sprite(new Texture("player_hp_bar.png"));
-//        stage.addActor();
-        super(new Texture("player_hp_bar.png"));
+    private Vector2 playerPosition;
+    public Hud(PlayScreen screen) {
+        super(new Texture("boss_hp_bar.png"));
+        playerPosition = screen.getPlayer().b2Body.getPosition();
+        setPosition(playerPosition.x, playerPosition.y);
     }
+
+    public void update() {
+        setPosition(playerPosition.x, playerPosition.y);
+    }
+
+
 }

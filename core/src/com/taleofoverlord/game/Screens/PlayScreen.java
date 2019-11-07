@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -44,12 +45,10 @@ public class PlayScreen implements Screen {
     private TextureAtlas playerAtlas;
     private TextureAtlas bossAtlas;
 
-    private Hud hud;
+   private Hud hud;
 
     public PlayScreen(TaleOfOverlord game) {
         this.game = game;
-
-        hud = new Hud();
 
         playerAtlas = new TextureAtlas("player.pack");
         bossAtlas = new TextureAtlas("boss.pack");
@@ -97,6 +96,7 @@ public class PlayScreen implements Screen {
         slashedSwords = new Array<SlashedSword>();
         punches = new Array<Punch>();
 
+//        hud = new Hud(this);
     }
 
     @Override
@@ -159,14 +159,22 @@ public class PlayScreen implements Screen {
         }
     }
 
+    public void handleBossBullet() {
+        if(boss.currentState == Boss.State.BLINK) {
+            bullets.add(new Bullet(this, boss, player));
+        }
+    }
+
     public void update(float delta) {
         handleInput(delta);
         handleBullet();
         handleSlashedSword();
         handlePunch();
+//        handleBossBullet();
         world.step(1/60f, 6, 2);
         player.update(delta);
         boss.update(delta);
+//        hud.update();
         gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         mapRenderer.setView(gameCam);
@@ -191,11 +199,8 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         player.draw(game.batch);
         boss.draw(game.batch);
-
+//        hud.draw(game.batch);
         game.batch.end();
-
-        game.batch.setProjectionMatrix(gameCam.combined);
-
 
 
 
