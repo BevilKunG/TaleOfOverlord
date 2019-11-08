@@ -59,7 +59,7 @@ public class PlayScreen implements Screen {
 
         // Map
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("level2.tmx");
+        map = mapLoader.load("level3.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map, 1 / TaleOfOverlord.PPM);
 
         // Game Cam Position
@@ -112,19 +112,22 @@ public class PlayScreen implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2)
             player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !player.checkIsBulletCreated()) {
             player.shoot();
             bullets.add(new Bullet(this, player, boss));
+            player.setIsBulletCreated(true);
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.S) && !player.checkIsSwordCreated()) {
             player.slash();
             slashedSwords.add(new SlashedSword(this, player, boss));
+            player.setIsSwordCreated(true);
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.P) && !player.checkIsPunchCreated()) {
             player.punch();
             punches.add(new Punch(this, player, boss));
+            player.setIsPunchCreated(true);
         }
 
     }

@@ -25,9 +25,9 @@ public class Player extends Fighter {
 
     public float stateTimer;
 
-    private boolean isShooting;
-    private boolean isSlashing;
-    private boolean isPunching;
+    private boolean isShooting, isBulletCreated;
+    private boolean isSlashing, isSwordCreated;
+    private boolean isPunching, isPunchCreated;
 
 
     public Player(PlayScreen screen) {
@@ -47,6 +47,7 @@ public class Player extends Fighter {
         frames.clear();
 
         //Shoot
+        isBulletCreated = false;
         isShooting = false;
         for (int i = 1; i < 4; i++) {
             frames.add(new TextureRegion(screen.getPlayerAtlas().findRegion("player_shoot"), i * 128, 0, 128, 128));
@@ -55,6 +56,7 @@ public class Player extends Fighter {
         frames.clear();
 
         //Slash
+        isSwordCreated = false;
         isSlashing = false;
         for (int i = 1; i < 3; i++) {
             frames.add(new TextureRegion(screen.getPlayerAtlas().findRegion("player_slash"), i * 128, 0, 128, 128));
@@ -63,6 +65,7 @@ public class Player extends Fighter {
         frames.clear();
 
         //Punch
+        isPunchCreated = false;
         isPunching = false;
         for (int i = 1; i < 3; i++) {
             frames.add(new TextureRegion(screen.getPlayerAtlas().findRegion("player_punch"), i * 128, 0, 128, 128));
@@ -172,6 +175,7 @@ public class Player extends Fighter {
             @Override
             public void run() {
                 isShooting = false;
+                setIsBulletCreated(false);
             }
         }, 0.5f);
     }
@@ -183,6 +187,7 @@ public class Player extends Fighter {
             @Override
             public void run() {
                 isSlashing = false;
+                setIsSwordCreated(false);
             }
         }, 0.3f);
     }
@@ -194,11 +199,36 @@ public class Player extends Fighter {
             @Override
             public void run() {
                 isPunching = false;
+                setIsPunchCreated(false);
             }
         }, 0.3f);
     }
 
     public boolean checkIsJumping() {
         return currentState == State.JUMPING;
+    }
+
+    public boolean checkIsSwordCreated() {
+        return isSwordCreated;
+    }
+
+    public void setIsSwordCreated(boolean isSwordCreated) {
+        this.isSwordCreated = isSwordCreated;
+    }
+
+    public boolean checkIsBulletCreated() {
+        return isBulletCreated;
+    }
+
+    public void setIsBulletCreated(boolean isBulletCreated) {
+        this.isBulletCreated = isBulletCreated;
+    }
+
+    public boolean checkIsPunchCreated() {
+        return isPunchCreated;
+    }
+
+    public void setIsPunchCreated(boolean isPunchCreated) {
+        this.isPunchCreated = isPunchCreated;
     }
 }
