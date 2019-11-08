@@ -12,7 +12,7 @@
   </data>
  </layer>
  <objectgroup id="4" name="Object Layer 1">
-  <object id="16" x="1.33333" y="238" width="798.667" height="1.33333"/>
+  <object id="16" x="1.33333" y="240" width="798.667" height="1.33333"/>
   <object id="17" x="-0.666667" y="-0.666667" width="800.667" height="1.33333"/>
   <object id="18" x="0" y="-0.666667" height="240.667"/>
   <object id="19" x="800.667" y="-0.666667" height="240"/>

@@ -171,6 +171,7 @@ public class PlayScreen implements Screen {
         handleSlashedSword();
         handlePunch();
 //        handleBossBullet();
+        handleBoss();
         world.step(1/60f, 6, 2);
         player.update(delta);
         boss.update(delta);
@@ -178,6 +179,15 @@ public class PlayScreen implements Screen {
         gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         mapRenderer.setView(gameCam);
+
+        Gdx.app.log("HP","" + player.getHealthPoint());
+    }
+
+    private void handleBoss() {
+        if(boss.checkIsMelee() == true && boss.checkIsSwordCreated() == false){
+            slashedSwords.add(new SlashedSword(this, boss, player));
+            boss.setIsSwordCreated(true);
+        }
     }
 
     @Override

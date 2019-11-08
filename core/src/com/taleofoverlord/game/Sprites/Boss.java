@@ -24,7 +24,8 @@ public class Boss extends Fighter {
     private boolean isMelee;
     private boolean isBlink;
     private boolean isShoot;
-    private boolean isWait, isFlip;
+    private boolean isWait;
+    private boolean isSwordCreated;
 
     private Vector2 currentPosition;
 
@@ -33,7 +34,7 @@ public class Boss extends Fighter {
 
     @Override
     public Vector2 getFrontPosition() {
-        return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? 1 : -1)), b2Body.getPosition().y + 0.12f);
+        return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? 1 : -1)), b2Body.getPosition().y - 0.05f);
     }
 
     public enum State { STANDING, MELEE, SHOOTING, PREPAREBLINK, BLINK };
@@ -98,9 +99,10 @@ public class Boss extends Fighter {
         actionStates.add(State.PREPAREBLINK);
 
         isWait = false;
-        isFlip = false;
 
         player = screen.getPlayer();
+
+        isSwordCreated = false;
     }
 
     public void define() {
@@ -195,13 +197,13 @@ public class Boss extends Fighter {
                 isPrepareBlink = false;
                 isMelee = true;
                 b2Body.setTransform(player.getFrontPosition(), 0);
-                isFlip = true;
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
                         isMelee = false;
                         isWait = true;
                         waitAction();
+                        setIsSwordCreated(false);
                     }
                 },0.2f);
             }
@@ -239,4 +241,14 @@ public class Boss extends Fighter {
         return super.checkIsRunningRight()? player.b2Body.getPosition().x > b2Body.getPosition().x : player.b2Body.getPosition().x < b2Body.getPosition().x;
     }
 
+    public boolean checkIsMelee(){
+        return  isMelee;
+    }
+
+    public boolean checkIsSwordCreated(){
+        return isSwordCreated;
+    }
+    public void setIsSwordCreated(boolean isSwordCreated){
+        this.isSwordCreated = isSwordCreated;
+    }
 }

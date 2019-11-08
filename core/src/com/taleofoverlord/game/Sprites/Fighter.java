@@ -12,7 +12,7 @@ import com.taleofoverlord.game.TaleOfOverlord;
 
 public abstract class Fighter extends Sprite {
 
-    private static int healthPoint;
+    private int healthPoint;
     private boolean isRunningRight;
 
     public Fighter(TextureRegion region,boolean isRunningRight) {
