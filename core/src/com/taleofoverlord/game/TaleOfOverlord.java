@@ -17,6 +17,7 @@ public class TaleOfOverlord extends Game {
 	public static final int SLASH_DAMAGE = 10;
 	public static final int BULLET_DAMAGE = 20;
 	public static final int PUNCH_DAMAGE = 5;
+	public static final int COLLISION_DAMAGE = 5;
 	public static final float SLASH_RANGE = 0.18f;
 	public static final float PUNCH_RANGE = 0.15f;
 

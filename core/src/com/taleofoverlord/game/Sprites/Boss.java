@@ -24,20 +24,10 @@ public class Boss extends Fighter {
     private boolean isSwordCreated;
     private boolean isBulletCreated;
 
-    @Override
-    public void recoil() {
-        b2Body.applyLinearImpulse(new Vector2(1f * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
-    }
-
     private Vector2 currentPosition;
 
 
     private Player player;
-
-    @Override
-    public Vector2 getFrontPosition() {
-        return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? 1 : -1)), b2Body.getPosition().y - 0.05f);
-    }
 
     public enum State { STANDING, MELEE, SHOOTING, PREPAREBLINK, BLINK };
     public State currentState;
@@ -45,6 +35,18 @@ public class Boss extends Fighter {
     public Array<State> actionStates;
 
     public float stateTimer;
+
+    @Override
+    public void recoil() {
+        b2Body.applyLinearImpulse(new Vector2(1f * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
+    }
+
+    @Override
+    public Vector2 getFrontPosition() {
+        return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? 1 : -1)), b2Body.getPosition().y);
+    }
+
+
 
     public Boss(PlayScreen screen) {
         super(screen.getBossAtlas().findRegion("boss_stand"),false);

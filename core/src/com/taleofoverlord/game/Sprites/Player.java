@@ -265,7 +265,7 @@ public class Player extends Fighter {
             public void run() {
                 isHurt = false;
             }
-        },0.5f);
+        },0.55f);
 
     }
 

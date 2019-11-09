@@ -52,14 +52,13 @@ public class Bullet extends Sprite {
         b2Body.createFixture(fdef).setUserData(this);
 
         b2Body.setGravityScale(0);
-//        b2Body.setLinearVelocity(new Vector2(4.0f * (shooter.checkIsRunningRight()? 1 : -1), 0));
-        b2Body.setLinearVelocity(new Vector2(2.0f * (shooter.checkIsRunningRight()? 1 : -1)*(float)Math.cos(Math.toRadians(angle)), 2.0f*(float)Math.sin(Math.toRadians(angle))) );
+        b2Body.setLinearVelocity(new Vector2(2.0f * (shooter.checkIsRunningRight()? 1 : -1) * (float)Math.cos(Math.toRadians(angle)), 2.0f * (float)Math.sin(Math.toRadians(angle))));
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 isFinished = true;
             }
-        }, 0.5f);
+        }, 1f);
     }
 
     public void update() {

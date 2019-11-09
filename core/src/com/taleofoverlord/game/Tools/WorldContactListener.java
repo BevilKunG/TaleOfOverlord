@@ -3,6 +3,7 @@ package com.taleofoverlord.game.Tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 import com.taleofoverlord.game.Sprites.*;
+import com.taleofoverlord.game.TaleOfOverlord;
 
 public class WorldContactListener implements ContactListener {
     @Override
@@ -18,6 +19,8 @@ public class WorldContactListener implements ContactListener {
                 Fighter target = (Fighter) targetFixture.getUserData();
                 if(bullet.getTarget() == target)  {
                     target.decreaseHealthPoint(bullet.getDamage());
+                    target.cancelAction();
+                    target.recoil();
                     bullet.finish();
                 }
             }
@@ -49,9 +52,24 @@ public class WorldContactListener implements ContactListener {
                 Fighter target = (Fighter) targetFixture.getUserData();
                 if(punch.getTarget() == target) {
                     target.decreaseHealthPoint(punch.getDamage());
+                    target.cancelAction();
+                    target.recoil();
                     punch.finish();
                 }
 
+            }
+        }
+
+        // Fighter Collision
+        if(Fighter.class.isAssignableFrom(fixA.getUserData().getClass()) && Fighter.class.isAssignableFrom(fixB.getUserData().getClass())) {
+            Fixture playerFixture = Player.class.isAssignableFrom(fixA.getUserData().getClass()) ? fixA : fixB;
+            Fixture bossFixture = fixA == playerFixture ? fixB : fixA;
+            if((playerFixture.getUserData() != null && Player.class.isAssignableFrom(playerFixture.getUserData().getClass())) && (bossFixture.getUserData() != null && Boss.class.isAssignableFrom(bossFixture.getUserData().getClass()))) {
+                Player player = (Player) playerFixture.getUserData();
+//                Boss boss = (Boss) bossFixture.getUserData();
+                player.decreaseHealthPoint(TaleOfOverlord.COLLISION_DAMAGE);
+                player.cancelAction();
+                player.recoil();
             }
         }
 

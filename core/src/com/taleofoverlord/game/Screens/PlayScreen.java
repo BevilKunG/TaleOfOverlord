@@ -166,7 +166,7 @@ public class PlayScreen implements Screen {
     }
 
     public void handleBossBullet() {
-        if(boss.checkIsShooting() == true && boss.checkIsBulletCreated() == false) {
+        if(boss.checkIsShooting() && !boss.checkIsBulletCreated()) {
             bullets.add(new Bullet(this, boss, player,0));
             bullets.add(new Bullet(this, boss, player,30));
             bullets.add(new Bullet(this, boss, player,45));
@@ -195,7 +195,7 @@ public class PlayScreen implements Screen {
     }
 
     private void handleBoss() {
-        if(boss.checkIsMelee() == true && boss.checkIsSwordCreated() == false){
+        if(boss.checkIsMelee() && !boss.checkIsSwordCreated()){
             slashedSwords.add(new SlashedSword(this, boss, player));
             boss.setIsSwordCreated(true);
         }
