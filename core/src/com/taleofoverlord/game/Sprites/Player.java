@@ -271,6 +271,6 @@ public class Player extends Fighter {
 
     @Override
     public void recoil() {
-        b2Body.applyLinearImpulse(new Vector2(5 * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
+        b2Body.applyLinearImpulse(new Vector2(1f * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
     }
 }

@@ -29,7 +29,7 @@ public class Boss extends Fighter {
 
     @Override
     public void recoil() {
-        b2Body.applyLinearImpulse(new Vector2(5 * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
+        b2Body.applyLinearImpulse(new Vector2(1f * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
     }
 
     private Vector2 currentPosition;
@@ -258,10 +258,10 @@ public class Boss extends Fighter {
     }
 
     public void cancelAction() {
-//        isShoot = false;
-//        isMelee = false;
-//        isPrepareBlink = false;
-//        isBlink = false;
-//        isWait = true;
+        isShoot = false;
+        isMelee = false;
+        isPrepareBlink = false;
+        isBlink = false;
+        isWait = true;
     }
 }
