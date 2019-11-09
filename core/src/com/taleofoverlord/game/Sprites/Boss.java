@@ -1,7 +1,5 @@
 package com.taleofoverlord.game.Sprites;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -10,8 +8,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.taleofoverlord.game.Screens.PlayScreen;
 import com.taleofoverlord.game.TaleOfOverlord;
-
-import java.util.Random;
 
 public class Boss extends Fighter {
     public World world;
@@ -23,9 +19,10 @@ public class Boss extends Fighter {
     private boolean isPrepareBlink;
     private boolean isMelee;
     private boolean isBlink;
-    private boolean isShoot;
+    private boolean isShooting;
     private boolean isWait;
     private boolean isSwordCreated;
+    private boolean isBulletCreated;
 
     @Override
     public void recoil() {
@@ -73,7 +70,8 @@ public class Boss extends Fighter {
         frames.clear();
 
         // Shoot
-        isShoot = false;
+        isBulletCreated = false;
+        isShooting = false;
         for(int i=0; i<4; i++) {
             frames.add(new TextureRegion(screen.getBossAtlas().findRegion("boss_shoot1"), i * 128, 0, 128, 128));
         }
@@ -128,7 +126,7 @@ public class Boss extends Fighter {
     }
 
     public void update(float delta) {
-        if(!isWait && !isMelee && !isShoot && !isBlink && !isPrepareBlink) {
+        if(!isWait && !isMelee && !isShooting && !isBlink && !isPrepareBlink) {
             isPrepareBlink = actionStates.random() == State.PREPAREBLINK;
             isBlink = !isPrepareBlink;
             if(isPrepareBlink) melee();
@@ -188,7 +186,7 @@ public class Boss extends Fighter {
             return State.BLINK;
         } else if(isMelee) {
             return State.MELEE;
-        } else if(isShoot) {
+        } else if(isShooting) {
           return State.SHOOTING;
         } else {
             return State.STANDING;
@@ -220,13 +218,14 @@ public class Boss extends Fighter {
             @Override
             public void run() {
                 isBlink = false;
-                isShoot = true;
+                isShooting = true;
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        isShoot = false;
+                        isShooting = false;
                         isWait = true;
                         waitAction();
+                        setIsBulletCreated(false);
                     }
                 },0.8f);
             }
@@ -258,10 +257,20 @@ public class Boss extends Fighter {
     }
 
     public void cancelAction() {
-        isShoot = false;
+        isShooting = false;
         isMelee = false;
         isPrepareBlink = false;
         isBlink = false;
         isWait = true;
+    }
+
+    public boolean checkIsBulletCreated(){
+        return  isBulletCreated;
+    }
+    public void setIsBulletCreated(boolean isBulletCreated){
+        this.isBulletCreated = isBulletCreated;
+    }
+    public boolean checkIsShooting(){
+        return isShooting;
     }
 }

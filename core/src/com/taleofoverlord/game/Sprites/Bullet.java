@@ -1,5 +1,6 @@
 package com.taleofoverlord.game.Sprites;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -17,12 +18,21 @@ public class Bullet extends Sprite {
     private Fighter target;
     private int damage;
     private boolean isFinished;
+    private double angle;
 
     public Bullet(PlayScreen screen,Fighter shooter, Fighter target) {
         this.world = screen.getWorld();
         this.shooter = shooter;
         this.target = target;
+        this.angle = 0;
+        define();
+    }
 
+    public Bullet(PlayScreen screen,Fighter shooter, Fighter target,double angle){
+        this.world = screen.getWorld();
+        this.shooter = shooter;
+        this.target = target;
+        this.angle = angle;
         define();
     }
 
@@ -42,8 +52,8 @@ public class Bullet extends Sprite {
         b2Body.createFixture(fdef).setUserData(this);
 
         b2Body.setGravityScale(0);
-        b2Body.setLinearVelocity(new Vector2(4.0f * (shooter.checkIsRunningRight()? 1 : -1), 0));
-
+//        b2Body.setLinearVelocity(new Vector2(4.0f * (shooter.checkIsRunningRight()? 1 : -1), 0));
+        b2Body.setLinearVelocity(new Vector2(2.0f * (shooter.checkIsRunningRight()? 1 : -1)*(float)Math.cos(Math.toRadians(angle)), 2.0f*(float)Math.sin(Math.toRadians(angle))) );
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -70,5 +80,6 @@ public class Bullet extends Sprite {
     public boolean checkIsFinished() {
         return isFinished;
     }
+
 
 }

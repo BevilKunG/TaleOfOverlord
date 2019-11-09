@@ -94,7 +94,7 @@ public class Player extends Fighter {
     public void define() {
         // Player Create body
         BodyDef bdef = new BodyDef();
-        bdef.position.set(32 / TaleOfOverlord.PPM, 32 / TaleOfOverlord.PPM);
+        bdef.position.set(220 / TaleOfOverlord.PPM, 32 / TaleOfOverlord.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2Body = world.createBody(bdef);
 

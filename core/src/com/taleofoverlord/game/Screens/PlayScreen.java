@@ -166,8 +166,13 @@ public class PlayScreen implements Screen {
     }
 
     public void handleBossBullet() {
-        if(boss.currentState == Boss.State.BLINK) {
-            bullets.add(new Bullet(this, boss, player));
+        if(boss.checkIsShooting() == true && boss.checkIsBulletCreated() == false) {
+            bullets.add(new Bullet(this, boss, player,0));
+            bullets.add(new Bullet(this, boss, player,30));
+            bullets.add(new Bullet(this, boss, player,45));
+            bullets.add(new Bullet(this, boss, player,60));
+            boss.setIsBulletCreated(true);
+
         }
     }
 
@@ -176,7 +181,7 @@ public class PlayScreen implements Screen {
         handleBullet();
         handleSlashedSword();
         handlePunch();
-//        handleBossBullet();
+        handleBossBullet();
         handleBoss();
         world.step(1/60f, 6, 2);
         player.update(delta);
