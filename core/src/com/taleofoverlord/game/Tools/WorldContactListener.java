@@ -32,6 +32,8 @@ public class WorldContactListener implements ContactListener {
                 Fighter target = (Fighter) targetFixture.getUserData();
                 if(slashedSword.getTarget() == target) {
                     target.decreaseHealthPoint(slashedSword.getDamage());
+                    target.cancelAction();
+                    target.recoil();
                     slashedSword.finish();
                 }
 

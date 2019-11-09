@@ -42,4 +42,6 @@ public abstract class Fighter extends Sprite {
     }
 
     public abstract Vector2 getFrontPosition();
+    public abstract void cancelAction();
+    public abstract void recoil();
 }

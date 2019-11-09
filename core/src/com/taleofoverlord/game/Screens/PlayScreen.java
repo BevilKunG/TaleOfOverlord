@@ -105,30 +105,33 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float delta) {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.b2Body.getLinearVelocity().y == 0)
-            player.b2Body.applyLinearImpulse(new Vector2(0, 4f), player.b2Body.getWorldCenter(), true);
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2)
-            player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2)
-            player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
+        if(!player.checkIsHurt()) {
+            if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.b2Body.getLinearVelocity().y == 0)
+                player.b2Body.applyLinearImpulse(new Vector2(0, 4f), player.b2Body.getWorldCenter(), true);
+            if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2)
+                player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
+            if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2)
+                player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !player.checkIsBulletCreated()) {
-            player.shoot();
-            bullets.add(new Bullet(this, player, boss));
-            player.setIsBulletCreated(true);
+            if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !player.checkIsBulletCreated()) {
+                player.shoot();
+                bullets.add(new Bullet(this, player, boss));
+                player.setIsBulletCreated(true);
+            }
+
+            if(Gdx.input.isKeyJustPressed(Input.Keys.S) && !player.checkIsSwordCreated()) {
+                player.slash();
+                slashedSwords.add(new SlashedSword(this, player, boss));
+                player.setIsSwordCreated(true);
+            }
+
+            if(Gdx.input.isKeyJustPressed(Input.Keys.P) && !player.checkIsPunchCreated()) {
+                player.punch();
+                punches.add(new Punch(this, player, boss));
+                player.setIsPunchCreated(true);
+            }
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.S) && !player.checkIsSwordCreated()) {
-            player.slash();
-            slashedSwords.add(new SlashedSword(this, player, boss));
-            player.setIsSwordCreated(true);
-        }
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.P) && !player.checkIsPunchCreated()) {
-            player.punch();
-            punches.add(new Punch(this, player, boss));
-            player.setIsPunchCreated(true);
-        }
 
     }
 

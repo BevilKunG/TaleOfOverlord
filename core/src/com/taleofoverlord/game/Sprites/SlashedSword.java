@@ -50,6 +50,9 @@ public class SlashedSword {
     public Fighter getTarget() {
         return target;
     }
+    public Fighter getSlasher() {
+        return slasher;
+    }
 
     public int getDamage() {
         return damage;

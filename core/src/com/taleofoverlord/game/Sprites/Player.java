@@ -17,9 +17,9 @@ public class Player extends Fighter {
 
 
     private TextureRegion playerStand, playerJump;
-    private Animation playerRun, playerShoot, playerSlash, playerPunch;
+    private Animation playerRun, playerShoot, playerSlash, playerPunch, playerHurt;
 
-    public enum State { STANDING, RUNNING, JUMPING, SHOOTING, SLASHING, PUNCHING}
+    public enum State { STANDING, RUNNING, JUMPING, SHOOTING, SLASHING, PUNCHING, HURTING};
     public State currentState;
     public State previousState;
 
@@ -28,6 +28,7 @@ public class Player extends Fighter {
     private boolean isShooting, isBulletCreated;
     private boolean isSlashing, isSwordCreated;
     private boolean isPunching, isPunchCreated;
+    private boolean isHurt;
 
 
     public Player(PlayScreen screen) {
@@ -74,6 +75,15 @@ public class Player extends Fighter {
         frames.clear();
         //
 
+        //Hurt
+        isHurt = false;
+        for(int i = 0;i < 4; i++) {
+            frames.add(new TextureRegion(screen.getPlayerAtlas().findRegion("player_hurt"), i * 128, 0, 128, 128));
+        }
+        playerHurt = new Animation(0.1f, frames);
+        frames.clear();
+
+
         define();
         playerStand = new TextureRegion(getTexture(), 0, 0, 128, 128);
         playerJump = new TextureRegion(screen.getPlayerAtlas().findRegion("player_jump"), 128, 0, 128, 128);
@@ -101,7 +111,6 @@ public class Player extends Fighter {
     }
 
     public void update(float delta) {
-//        Gdx.app.log("HP"," "+super.getHealthPoint());
         setPosition((b2Body.getPosition().x - getWidth() / 2) + getOffset(), b2Body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta));
     }
@@ -125,17 +134,21 @@ public class Player extends Fighter {
                 break;
             case PUNCHING: region = (TextureRegion) playerPunch.getKeyFrame(stateTimer, false);
                 break;
+            case HURTING: region = (TextureRegion) playerHurt.getKeyFrame(stateTimer, false);
+                break;
             case STANDING:
             default: region = playerStand;
                 break;
         }
 
-        if((b2Body.getLinearVelocity().x < -TaleOfOverlord.FLIP_EPSILON || !super.checkIsRunningRight()) && !region.isFlipX() ) {
-            region.flip(true, false);
-            super.setRunningRight(false);
-        } else if((b2Body.getLinearVelocity().x > TaleOfOverlord.FLIP_EPSILON || super.checkIsRunningRight()) && region.isFlipX()) {
-            region.flip(true, false);
-            super.setRunningRight(true);
+        if(!isHurt) {
+            if((b2Body.getLinearVelocity().x < -TaleOfOverlord.FLIP_EPSILON || !super.checkIsRunningRight()) && !region.isFlipX() ) {
+                region.flip(true, false);
+                super.setRunningRight(false);
+            } else if((b2Body.getLinearVelocity().x > TaleOfOverlord.FLIP_EPSILON || super.checkIsRunningRight()) && region.isFlipX()) {
+                region.flip(true, false);
+                super.setRunningRight(true);
+            }
         }
 
         stateTimer = currentState == previousState ? stateTimer+delta : 0;
@@ -152,8 +165,10 @@ public class Player extends Fighter {
         }
         else if(isPunching) {
             return State.PUNCHING;
-        } else if(b2Body.getLinearVelocity().y > TaleOfOverlord.JUMP_EPSILON){
-//            Gdx.app.log("OK", "JUMP");
+        }
+        else if(isHurt) {
+            return State.HURTING;
+        }else if(b2Body.getLinearVelocity().y > TaleOfOverlord.JUMP_EPSILON){
             return State.JUMPING;
         } else if(b2Body.getLinearVelocity().x >= TaleOfOverlord.FLIP_EPSILON || b2Body.getLinearVelocity().x <= -TaleOfOverlord.FLIP_EPSILON) {
             return State.RUNNING;
@@ -230,5 +245,32 @@ public class Player extends Fighter {
 
     public void setIsPunchCreated(boolean isPunchCreated) {
         this.isPunchCreated = isPunchCreated;
+    }
+
+    public boolean checkIsHurt() {
+        return isHurt;
+    }
+
+    @Override
+    public void cancelAction() {
+        isPunching = false;
+        isSlashing = false;
+        isShooting = false;
+        isPunchCreated = false;
+        isBulletCreated = false;
+        isSwordCreated = false;
+        isHurt = true;
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                isHurt = false;
+            }
+        },0.5f);
+
+    }
+
+    @Override
+    public void recoil() {
+        b2Body.applyLinearImpulse(new Vector2(5 * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
     }
 }
