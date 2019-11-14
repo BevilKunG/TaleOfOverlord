@@ -1,6 +1,9 @@
 package com.taleofoverlord.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.taleofoverlord.game.Screens.PlayScreen;
 
@@ -21,9 +24,20 @@ public class TaleOfOverlord extends Game {
 	public static final float SLASH_RANGE = 0.18f;
 	public static final float PUNCH_RANGE = 0.15f;
 
+	public static AssetManager manager;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		manager = new AssetManager();
+		//manager.load("audio/music/bg_sound.mp3", Music.class);
+		manager.load("audio/sounds/player_gunshot.wav", Sound.class);
+		manager.load("audio/sounds/boss_gunshot.wav", Sound.class);
+		manager.load("audio/sounds/player_slashing.mp3", Sound.class);
+		manager.load("audio/sounds/boss_melee.mp3", Sound.class);
+		manager.load("audio/sounds/player_punching.mp3", Sound.class);
+		manager.finishLoading();
+
 		setScreen(new PlayScreen(this));
 	}
 

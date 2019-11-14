@@ -1,5 +1,6 @@
 package com.taleofoverlord.game.Sprites;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -203,6 +204,7 @@ public class Boss extends Fighter {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
+                TaleOfOverlord.manager.get("audio/sounds/boss_melee.mp3", Sound.class).play();
                 isPrepareBlink = false;
                 isMelee = true;
                 b2Body.setTransform(player.getFrontPosition(), 0);
@@ -225,6 +227,7 @@ public class Boss extends Fighter {
             public void run() {
                 isBlink = false;
                 isShooting = true;
+                TaleOfOverlord.manager.get("audio/sounds/boss_gunshot.wav", Sound.class).play();
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
