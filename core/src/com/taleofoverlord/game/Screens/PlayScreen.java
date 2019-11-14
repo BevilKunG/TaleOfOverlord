@@ -47,10 +47,13 @@ public class PlayScreen implements Screen {
     private TextureAtlas playerAtlas;
     private TextureAtlas bossAtlas;
 
+    public boolean isGameOver;
+
    private Hud hud;
 
     public PlayScreen(TaleOfOverlord game) {
         this.game = game;
+        isGameOver = false;
 
         playerAtlas = new TextureAtlas("player.pack");
         bossAtlas = new TextureAtlas("boss.pack");
@@ -182,7 +185,16 @@ public class PlayScreen implements Screen {
         }
     }
 
+    public void handleHealth() {
+        hud.playerHealthBar.setValue(((float)player.getHealthPoint() / TaleOfOverlord.PLAYER_MAX_HP));
+        hud.bossHealthBar.setValue(((float)boss.getHealthPoint() / TaleOfOverlord.BOSS_MAX_HP));
+        if(!isGameOver && player.getHealthPoint()<= 0) {
+            isGameOver = true;
+        }
+    }
+
     public void update(float delta) {
+        handleHealth();
         handleInput(delta);
         handleBullet();
         handleSlashedSword();
@@ -195,8 +207,6 @@ public class PlayScreen implements Screen {
         gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         mapRenderer.setView(gameCam);
-
-        Gdx.app.log("HP","" + player.getHealthPoint());
     }
 
     private void handleBoss() {
@@ -229,7 +239,7 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
-//        hud.stage.act();
+        hud.stage.act();
     }
 
     public TextureAtlas getPlayerAtlas() {
