@@ -1,6 +1,7 @@
 package com.taleofoverlord.game.Tools;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.taleofoverlord.game.Sprites.*;
 import com.taleofoverlord.game.TaleOfOverlord;
@@ -66,10 +67,11 @@ public class WorldContactListener implements ContactListener {
             Fixture bossFixture = fixA == playerFixture ? fixB : fixA;
             if((playerFixture.getUserData() != null && Player.class.isAssignableFrom(playerFixture.getUserData().getClass())) && (bossFixture.getUserData() != null && Boss.class.isAssignableFrom(bossFixture.getUserData().getClass()))) {
                 Player player = (Player) playerFixture.getUserData();
-//                Boss boss = (Boss) bossFixture.getUserData();
+                Boss boss = (Boss) bossFixture.getUserData();
                 player.decreaseHealthPoint(TaleOfOverlord.COLLISION_DAMAGE);
                 player.cancelAction();
-                player.recoil();
+                if(player.b2Body.getPosition().y > boss.b2Body.getPosition().y) player.recoil(new Vector2(3f, 2f));
+                else player.recoil();
             }
         }
 

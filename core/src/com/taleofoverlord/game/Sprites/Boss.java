@@ -41,6 +41,10 @@ public class Boss extends Fighter {
         b2Body.applyLinearImpulse(new Vector2(1f * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
     }
 
+    public void recoil(Vector2 recoilFactor) {
+        b2Body.applyLinearImpulse(new Vector2(1f * recoilFactor.x * (checkIsRunningRight()? -1:1), 1f * recoilFactor.y), b2Body.getWorldCenter(), true);
+    }
+
     @Override
     public Vector2 getFrontPosition() {
         return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? 1 : -1)), b2Body.getPosition().y);

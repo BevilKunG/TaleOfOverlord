@@ -14,6 +14,7 @@ public class Player extends Fighter {
 
     public World world;
     public Body b2Body;
+    private Boss boss;
 
 
     private TextureRegion playerStand, playerJump;
@@ -141,15 +142,15 @@ public class Player extends Fighter {
                 break;
         }
 
-        if(!isHurt) {
-            if((b2Body.getLinearVelocity().x < -TaleOfOverlord.FLIP_EPSILON || !super.checkIsRunningRight()) && !region.isFlipX() ) {
+//        if(!isHurt) {
+            if(((!isHurt && b2Body.getLinearVelocity().x < -TaleOfOverlord.FLIP_EPSILON) || !super.checkIsRunningRight()) && !region.isFlipX() ) {
                 region.flip(true, false);
                 super.setRunningRight(false);
-            } else if((b2Body.getLinearVelocity().x > TaleOfOverlord.FLIP_EPSILON || super.checkIsRunningRight()) && region.isFlipX()) {
+            } else if(((!isHurt && b2Body.getLinearVelocity().x > TaleOfOverlord.FLIP_EPSILON) || super.checkIsRunningRight()) && region.isFlipX()) {
                 region.flip(true, false);
-                super.setRunningRight(true);
+                 super.setRunningRight(true);
             }
-        }
+//        }
 
         stateTimer = currentState == previousState ? stateTimer+delta : 0;
         previousState = currentState;
@@ -185,7 +186,7 @@ public class Player extends Fighter {
 
     public void shoot() {
         isShooting = true;
-
+        b2Body.setLinearVelocity(new Vector2(0, 0));
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -197,7 +198,7 @@ public class Player extends Fighter {
 
     public void slash() {
         isSlashing = true;
-
+        b2Body.setLinearVelocity(new Vector2(0, 0));
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -209,7 +210,7 @@ public class Player extends Fighter {
 
     public void punch() {
         isPunching = true;
-
+        b2Body.setLinearVelocity(new Vector2(0, 0));
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -251,6 +252,18 @@ public class Player extends Fighter {
         return isHurt;
     }
 
+    public boolean checkisShooting() {
+        return isShooting;
+    }
+
+    public boolean checkisSlashing() {
+        return isSlashing;
+    }
+
+    public boolean checkisPunching() {
+        return isPunching;
+    }
+
     @Override
     public void cancelAction() {
         isPunching = false;
@@ -272,5 +285,9 @@ public class Player extends Fighter {
     @Override
     public void recoil() {
         b2Body.applyLinearImpulse(new Vector2(1f * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
+    }
+
+    public void recoil(Vector2 recoilFactor) {
+        b2Body.applyLinearImpulse(new Vector2(1f * recoilFactor.x * (checkIsRunningRight()? -1:1), 1f * recoilFactor.y), b2Body.getWorldCenter(), true);
     }
 }
