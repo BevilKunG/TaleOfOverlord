@@ -1,6 +1,7 @@
 package com.taleofoverlord.game.Sprites;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -186,6 +187,7 @@ public class Player extends Fighter {
 
     public void shoot() {
         isShooting = true;
+        TaleOfOverlord.manager.get("audio/sounds/player_gunshot.wav", Sound.class).play();
         b2Body.setLinearVelocity(new Vector2(0, 0));
         Timer.schedule(new Timer.Task() {
             @Override
@@ -198,6 +200,7 @@ public class Player extends Fighter {
 
     public void slash() {
         isSlashing = true;
+        TaleOfOverlord.manager.get("audio/sounds/player_slashing.mp3", Sound.class).play();
         b2Body.setLinearVelocity(new Vector2(0, 0));
         Timer.schedule(new Timer.Task() {
             @Override
@@ -210,6 +213,7 @@ public class Player extends Fighter {
 
     public void punch() {
         isPunching = true;
+        TaleOfOverlord.manager.get("audio/sounds/player_punching.mp3", Sound.class).play();
         b2Body.setLinearVelocity(new Vector2(0, 0));
         Timer.schedule(new Timer.Task() {
             @Override
