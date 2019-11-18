@@ -111,7 +111,7 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float delta) {
-        if(!player.checkIsHurt()) {
+        if(!isGameOver && !player.checkIsHurt()) {
             boolean canMove = !player.checkisPunching() && !player.checkisSlashing() && !player.checkisShooting();
             if(canMove) {
                 if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.b2Body.getLinearVelocity().y == 0) {
@@ -201,6 +201,7 @@ public class PlayScreen implements Screen {
         hud.bossHealthBar.setValue(1f-((float)boss.getHealthPoint() / TaleOfOverlord.BOSS_MAX_HP));
         if(!isGameOver && player.getHealthPoint()<= 0) {
             isGameOver = true;
+            player.dead();
         }
     }
 

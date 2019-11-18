@@ -1,5 +1,6 @@
 package com.taleofoverlord.game.Sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,6 +26,7 @@ public class Boss extends Fighter {
     private boolean isSwordCreated;
     private boolean isBulletCreated;
     private boolean isThrowing;
+    private boolean isBluffBlink;
 
     private Vector2 currentPosition;
 
@@ -99,7 +101,7 @@ public class Boss extends Fighter {
 
         //
 
-        bigAttackCounter = 0;
+        bigAttackCounter = 1;
         bigAttackLeft = 0;
 
 
@@ -109,6 +111,8 @@ public class Boss extends Fighter {
         player = screen.getPlayer();
 
         isSwordCreated = false;
+
+        isBluffBlink = false;
     }
 
     public void define() {
@@ -140,7 +144,12 @@ public class Boss extends Fighter {
         return (int)(Math.random()*100);
     }
 
-    public State getTinyAttack(int percent) {
+    public float getPercentHP() {
+        return ((float)getHealthPoint()/TaleOfOverlord.BOSS_MAX_HP)*100;
+    }
+
+    public State getTinyAttack() {
+        int percent = randomPercent();
         if(percent<=60) return State.PREPAREBLINK;
         else if(percent<=90) return State.THROWING;
         else return State.BLINK;
@@ -150,10 +159,21 @@ public class Boss extends Fighter {
         return State.BLINK;
     }
 
-    public void runPattern(int healthPoint) {
+    public State getBlinkAttack() {
+        int percent = randomPercent();
+        if(percent<=50) return State.PREPAREBLINK;
+        else return State.BLINK;
+    }
+
+    public State getBluffBlink() {
+        isBluffBlink = true;
+        return getBlinkAttack();
+    }
+
+    public State getPatternState() {
         State state = State.STANDING;
-        if(healthPoint>60) {
-            if(bigAttackCounter%10!=0) state = getTinyAttack(randomPercent());
+        if(getPercentHP()>60) {
+            if(bigAttackCounter%10!=0) state = getTinyAttack();
             if(bigAttackCounter%10==0 && bigAttackLeft==0) {
                 bigAttackLeft = 2;
                 isWait = true;
@@ -163,22 +183,27 @@ public class Boss extends Fighter {
                 state = getBigAttack();
                 bigAttackLeft--;
             }
-
-        } else if(healthPoint>40) {
-
+        } else if(getPercentHP()>40) {
+            if(randomPercent()<=60) state = getBlinkAttack();
+            else state = getBluffBlink();
         } else {
 
         }
+        return state;
+    }
 
-        switch (state) {
+    public void runPattern(int healthPoint) {
+        switch (getPatternState()) {
                 case PREPAREBLINK: {
                     isPrepareBlink = true;
-                    melee();
+                    if(!isBluffBlink) prepareBlinkAndMelee();
+                    else bluffBlink();
                     break;
                 }
                 case BLINK: {
                     isBlink = true;
-                    shoot();
+                    if(!isBluffBlink) blinkAndShoot();
+                    else bluffBlink();
                     break;
                 }
                 case THROWING: {
@@ -247,8 +272,9 @@ public class Boss extends Fighter {
 
     public Vector2 getBlinkPosition() {
         boolean isBlinkToFront = randomPercent()%2==0;
-        if(isBlinkToFront) return new Vector2(player.getFrontPosition().x + (player.checkIsRunningRight()?1f:-1f), player.getFrontPosition().y);
-        else return new Vector2(player.getBackPosition().x + (player.checkIsRunningRight()?-1f:1f), player.getBackPosition().y);
+        boolean isSpace = isBlink || isThrowing;
+        if(isBlinkToFront) return new Vector2(player.getFrontPosition().x + ((player.checkIsRunningRight()?1f:-1f) * (isSpace?1:0)), player.getFrontPosition().y);
+        else return new Vector2(player.getBackPosition().x + ((player.checkIsRunningRight()?-1f:1f) * (isSpace?1:0)), player.getBackPosition().y);
     }
 
 
@@ -286,12 +312,40 @@ public class Boss extends Fighter {
         b2Body.setLinearVelocity(new Vector2(0, 0));
     }
 
-    public void melee() {
+    public void blink() {
+        Vector2 blinkedPosition = getBlinkPosition();
+        b2Body.setTransform(blinkedPosition, 0);
+    }
+
+    public void bluffBlink() {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                Vector2 blinkedPosition = ((int)(Math.random() * 100))%2==0? player.getFrontPosition() : player.getBackPosition();
-                b2Body.setTransform(blinkedPosition, 0);
+                blink();
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        isBluffBlink = false;
+                        isPrepareBlink = false;
+                        isBlink = false;
+                        Timer.schedule(new Timer.Task() {
+                            @Override
+                            public void run() {
+                                isWait = true;
+                                waitAction();
+                            }
+                        },0.2f);
+                    }
+                }, 1f);
+            }
+        }, 1f);
+    }
+
+    public void prepareBlinkAndMelee() {
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                blink();
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
@@ -313,13 +367,11 @@ public class Boss extends Fighter {
         }, 1f);
     }
 
-    public void shoot() {
+    public void blinkAndShoot() {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                Vector2 blinkedPosition = getBlinkPosition();
-                b2Body.setTransform(new Vector2(blinkedPosition), 0);
-
+                blink();
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
@@ -343,8 +395,7 @@ public class Boss extends Fighter {
     }
 
     public void throwBomb() {
-        Vector2 blinkedPosition = getBlinkPosition();
-        b2Body.setTransform(new Vector2(blinkedPosition), 0);
+        blink();
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {

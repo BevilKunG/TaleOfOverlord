@@ -19,9 +19,11 @@ public class WorldContactListener implements ContactListener {
                 Bullet bullet = (Bullet) bulletFixture.getUserData();
                 Fighter target = (Fighter) targetFixture.getUserData();
                 if(bullet.getTarget() == target)  {
-                    target.decreaseHealthPoint(bullet.getDamage());
-                    target.cancelAction();
-                    target.recoil();
+                    if(checkCanAttack(target)) {
+                        target.decreaseHealthPoint(bullet.getDamage());
+                        target.cancelAction();
+                        target.recoil();
+                    }
                     bullet.finish();
                 }
             }
@@ -32,7 +34,7 @@ public class WorldContactListener implements ContactListener {
             Fixture bulletFixture2 = fixA == bulletFixture1 ? fixB : fixA;
 
             Bullet bullet1 = (Bullet)bulletFixture1.getUserData();
-            Bullet bullet2 = (Bullet)bulletFixture1.getUserData();
+            Bullet bullet2 = (Bullet)bulletFixture2.getUserData();
             if(bullet1.getTarget().hashCode() != bullet2.getTarget().hashCode()) {
                 bullet1.finish();
                 bullet2.finish();
@@ -59,9 +61,11 @@ public class WorldContactListener implements ContactListener {
                 SlashedSword slashedSword = (SlashedSword) slashedSwordFixture.getUserData();
                 Fighter target = (Fighter) targetFixture.getUserData();
                 if(slashedSword.getTarget() == target) {
-                    target.decreaseHealthPoint(slashedSword.getDamage());
-                    target.cancelAction();
-                    target.recoil();
+                    if(checkCanAttack(target)) {
+                        target.decreaseHealthPoint(slashedSword.getDamage());
+                        target.cancelAction();
+                        target.recoil();
+                    }
                     slashedSword.finish();
                 }
 
@@ -76,9 +80,11 @@ public class WorldContactListener implements ContactListener {
                 Punch punch = (Punch) punchFixture.getUserData();
                 Fighter target = (Fighter) targetFixture.getUserData();
                 if(punch.getTarget() == target) {
-                    target.decreaseHealthPoint(punch.getDamage());
-                    target.cancelAction();
-                    target.recoil();
+                    if(checkCanAttack(target)) {
+                        target.decreaseHealthPoint(punch.getDamage());
+                        target.cancelAction();
+                        target.recoil();
+                    }
                     punch.finish();
                 }
 
@@ -114,5 +120,9 @@ public class WorldContactListener implements ContactListener {
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
 
+    }
+
+    public boolean checkCanAttack(Fighter target) {
+        return (Player.class.isAssignableFrom(target.getClass()) && !((Player)target).checkIsHurt()) || Boss.class.isAssignableFrom(target.getClass());
     }
 }

@@ -19,9 +19,9 @@ public class Player extends Fighter {
 
 
     private TextureRegion playerStand, playerJump;
-    private Animation playerRun, playerShoot, playerSlash, playerPunch, playerHurt;
+    private Animation playerRun, playerShoot, playerSlash, playerPunch, playerHurt, playerDead;
 
-    public enum State { STANDING, RUNNING, JUMPING, SHOOTING, SLASHING, PUNCHING, HURTING};
+    public enum State { STANDING, RUNNING, JUMPING, SHOOTING, SLASHING, PUNCHING, HURTING, DEAD};
     public State currentState;
     public State previousState;
 
@@ -30,12 +30,13 @@ public class Player extends Fighter {
     private boolean isShooting, isBulletCreated;
     private boolean isSlashing, isSwordCreated;
     private boolean isPunching, isPunchCreated;
-    private boolean isHurt;
+    private boolean isHurt, isDead;
 
 
     public Player(PlayScreen screen) {
         super(screen.getPlayerAtlas().findRegion("player_stand"), true);
         this.world = screen.getWorld();
+
 
         currentState = State.STANDING;
         previousState = State.STANDING;
@@ -83,6 +84,15 @@ public class Player extends Fighter {
             frames.add(new TextureRegion(screen.getPlayerAtlas().findRegion("player_hurt"), i * 128, 0, 128, 128));
         }
         playerHurt = new Animation(0.1f, frames);
+        frames.clear();
+
+        // Dead
+        isDead = false;
+        isHurt = false;
+        for(int i = 0;i < 4; i++) {
+            frames.add(new TextureRegion(screen.getPlayerAtlas().findRegion("player_die"), i * 128, 0, 128, 128));
+        }
+        playerDead = new Animation(0.1f, frames);
         frames.clear();
 
 
@@ -138,6 +148,8 @@ public class Player extends Fighter {
                 break;
             case HURTING: region = (TextureRegion) playerHurt.getKeyFrame(stateTimer, false);
                 break;
+            case DEAD: region = (TextureRegion) playerDead.getKeyFrame(stateTimer, false);
+                break;
             case STANDING:
             default: region = playerStand;
                 break;
@@ -158,6 +170,8 @@ public class Player extends Fighter {
 
 
     public State getState() {
+        if(isDead) return State.DEAD;
+
         if(isShooting) {
             return State.SHOOTING;
         } else if(isSlashing) {
@@ -165,8 +179,7 @@ public class Player extends Fighter {
         }
         else if(isPunching) {
             return State.PUNCHING;
-        }
-        else if(isHurt) {
+        } else if(isHurt) {
             return State.HURTING;
         }else if(b2Body.getLinearVelocity().y > TaleOfOverlord.JUMP_EPSILON){
             return State.JUMPING;
@@ -190,7 +203,6 @@ public class Player extends Fighter {
     public void shoot() {
         isShooting = true;
         TaleOfOverlord.manager.get("audio/sounds/player_gunshot.wav", Sound.class).play();
-//        stopMoving();
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -203,7 +215,6 @@ public class Player extends Fighter {
     public void slash() {
         isSlashing = true;
         TaleOfOverlord.manager.get("audio/sounds/player_slashing.mp3", Sound.class).play();
-//        stopMoving();
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -216,7 +227,6 @@ public class Player extends Fighter {
     public void punch() {
         isPunching = true;
         TaleOfOverlord.manager.get("audio/sounds/player_punching.mp3", Sound.class).play();
-//        stopMoving();
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -224,6 +234,10 @@ public class Player extends Fighter {
                 setIsPunchCreated(false);
             }
         }, 0.3f);
+    }
+
+    public void dead() {
+        isDead = true;
     }
 
     public void stopMoving() {
