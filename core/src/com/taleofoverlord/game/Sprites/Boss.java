@@ -15,7 +15,7 @@ public class Boss extends Fighter {
     public Body b2Body;
 
     private TextureRegion bossStand;
-    private Animation bossMelee, bossShoot, bossPrepareBlink, bossBlink;
+    private Animation bossMelee, bossShoot, bossPrepareBlink, bossBlink, bossThrowing;
 
     private boolean isPrepareBlink;
     private boolean isMelee;
@@ -24,34 +24,19 @@ public class Boss extends Fighter {
     private boolean isWait;
     private boolean isSwordCreated;
     private boolean isBulletCreated;
+    private boolean isThrowing;
 
     private Vector2 currentPosition;
 
 
     private Player player;
 
-    public enum State { STANDING, MELEE, SHOOTING, PREPAREBLINK, BLINK };
+    public enum State { STANDING, MELEE, SHOOTING, PREPAREBLINK, BLINK, THROWING };
     public State currentState;
     public State previousState;
-    public Array<State> actionStates;
 
     public float stateTimer;
-
-    @Override
-    public void recoil() {
-        b2Body.applyLinearImpulse(new Vector2(1f * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
-    }
-
-    public void recoil(Vector2 recoilFactor) {
-        b2Body.applyLinearImpulse(new Vector2(1f * recoilFactor.x * (checkIsRunningRight()? -1:1), 1f * recoilFactor.y), b2Body.getWorldCenter(), true);
-    }
-
-    @Override
-    public Vector2 getFrontPosition() {
-        return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? 1 : -1)), b2Body.getPosition().y);
-    }
-
-
+    public int bigAttackCounter, bigAttackLeft;
 
     public Boss(PlayScreen screen) {
         super(screen.getBossAtlas().findRegion("boss_stand"),false);
@@ -104,9 +89,20 @@ public class Boss extends Fighter {
         bossBlink = new Animation(0.25f, frames);
         frames.clear();
 
-        actionStates = new Array<State> ();
-        actionStates.add(State.BLINK);
-        actionStates.add(State.PREPAREBLINK);
+        // THROWING
+        isThrowing = false;
+        for(int i=0; i<5; i++) {
+            frames.add(new TextureRegion(screen.getBossAtlas().findRegion("boss_throwing"), i * 128, 0, 128, 128));
+        }
+        bossThrowing = new Animation(0.25f, frames);
+        frames.clear();
+
+        //
+
+        bigAttackCounter = 0;
+        bigAttackLeft = 0;
+
+
 
         isWait = false;
 
@@ -133,14 +129,64 @@ public class Boss extends Fighter {
     }
 
     public void update(float delta) {
-        if(!isWait && !isMelee && !isShooting && !isBlink && !isPrepareBlink) {
-            isPrepareBlink = actionStates.random() == State.PREPAREBLINK;
-            isBlink = !isPrepareBlink;
-            if(isPrepareBlink) melee();
-            else shoot();
+        if(!checkIsAction()) {
+            runPattern(super.getHealthPoint());
         }
         setPosition((b2Body.getPosition().x - getWidth() / 2) + getOffset(), b2Body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta));
+    }
+
+    public int randomPercent() {
+        return (int)(Math.random()*100);
+    }
+
+    public State getTinyAttack(int percent) {
+        if(percent<=60) return State.PREPAREBLINK;
+        else if(percent<=90) return State.THROWING;
+        else return State.BLINK;
+    }
+
+    public State getBigAttack() {
+        return State.BLINK;
+    }
+
+    public void runPattern(int healthPoint) {
+        State state = State.STANDING;
+        if(healthPoint>60) {
+            if(bigAttackCounter%10!=0) state = getTinyAttack(randomPercent());
+            if(bigAttackCounter%10==0 && bigAttackLeft==0) {
+                bigAttackLeft = 2;
+                isWait = true;
+                waitAction();
+            }
+            if(bigAttackLeft!=0 && !isWait) {
+                state = getBigAttack();
+                bigAttackLeft--;
+            }
+
+        } else if(healthPoint>40) {
+
+        } else {
+
+        }
+
+        switch (state) {
+                case PREPAREBLINK: {
+                    isPrepareBlink = true;
+                    melee();
+                    break;
+                }
+                case BLINK: {
+                    isBlink = true;
+                    shoot();
+                    break;
+                }
+                case THROWING: {
+                    isThrowing = true;
+                    throwBomb();
+                    break;
+                }
+            }
     }
 
     public float getOffset() {
@@ -161,19 +207,16 @@ public class Boss extends Fighter {
                 break;
             case BLINK: region = (TextureRegion) bossBlink.getKeyFrame(stateTimer, true);
                 break;
+            case THROWING: region = (TextureRegion) bossThrowing.getKeyFrame(stateTimer, true);
+                break;
             case STANDING:
             default: region = bossStand;
                 break;
         }
 
         if(!checkInFrontOfPlayer()) {
-            if(player.checkIsRunningRight() && this.checkIsRunningRight()) {
-                region.flip(true, false);
-                super.setRunningRight(false);
-            } else if(!player.checkIsRunningRight() && !this.checkIsRunningRight()) {
-                region.flip(true, false);
-                super.setRunningRight(true);
-            }
+            region.flip(true, false);
+            super.setRunningRight(!checkIsRunningRight());
         }
         if(this.checkIsRunningRight() != region.isFlipX()) {
             region.flip(true, false);
@@ -195,28 +238,77 @@ public class Boss extends Fighter {
             return State.MELEE;
         } else if(isShooting) {
           return State.SHOOTING;
+        } else if(isThrowing) {
+            return  State.THROWING;
         } else {
             return State.STANDING;
         }
+    }
+
+    public Vector2 getBlinkPosition() {
+        boolean isBlinkToFront = randomPercent()%2==0;
+        if(isBlinkToFront) return new Vector2(player.getFrontPosition().x + (player.checkIsRunningRight()?1f:-1f), player.getFrontPosition().y);
+        else return new Vector2(player.getBackPosition().x + (player.checkIsRunningRight()?-1f:1f), player.getBackPosition().y);
+    }
+
+
+    @Override
+    public Vector2 getFrontPosition() {
+        return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? 1 : -1)), b2Body.getPosition().y);
+    }
+
+    public Vector2 getBackPosition() {
+        return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? -1 : 1)), b2Body.getPosition().y);
+    }
+
+    @Override
+    public void recoil() {
+        b2Body.applyLinearImpulse(new Vector2(1f * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                stopMoving();
+            }
+        }, 0.2f);
+    }
+
+    public void recoil(Vector2 recoilFactor) {
+        b2Body.applyLinearImpulse(new Vector2(1f * recoilFactor.x * (checkIsRunningRight()? -1:1), 1f * recoilFactor.y), b2Body.getWorldCenter(), true);
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                stopMoving();
+            }
+        }, 0.2f);
+    }
+
+    public void stopMoving() {
+        b2Body.setLinearVelocity(new Vector2(0, 0));
     }
 
     public void melee() {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                TaleOfOverlord.manager.get("audio/sounds/boss_melee.mp3", Sound.class).play();
-                isPrepareBlink = false;
-                isMelee = true;
-                b2Body.setTransform(player.getFrontPosition(), 0);
+                Vector2 blinkedPosition = ((int)(Math.random() * 100))%2==0? player.getFrontPosition() : player.getBackPosition();
+                b2Body.setTransform(blinkedPosition, 0);
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        isMelee = false;
-                        isWait = true;
-                        waitAction();
-                        setIsSwordCreated(false);
+                        isPrepareBlink = false;
+                        isMelee = true;
+                        TaleOfOverlord.manager.get("audio/sounds/boss_melee.mp3", Sound.class).play();
+                        Timer.schedule(new Timer.Task() {
+                            @Override
+                            public void run() {
+                                isMelee = false;
+                                isWait = true;
+                                waitAction();
+                                setIsSwordCreated(false);
+                            }
+                        },0.2f);
                     }
-                },0.2f);
+                }, 1f);
             }
         }, 1f);
     }
@@ -225,20 +317,42 @@ public class Boss extends Fighter {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                isBlink = false;
-                isShooting = true;
-                TaleOfOverlord.manager.get("audio/sounds/boss_gunshot.wav", Sound.class).play();
+                Vector2 blinkedPosition = getBlinkPosition();
+                b2Body.setTransform(new Vector2(blinkedPosition), 0);
+
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        isShooting = false;
-                        isWait = true;
-                        waitAction();
-                        setIsBulletCreated(false);
+                        isBlink = false;
+                        isShooting = true;
+                        TaleOfOverlord.manager.get("audio/sounds/boss_gunshot.wav", Sound.class).play();
+                        Timer.schedule(new Timer.Task() {
+                            @Override
+                            public void run() {
+                                isShooting = false;
+                                isWait = true;
+                                waitAction();
+                                setIsBulletCreated(false);
+                            }
+                        },0.8f);
                     }
-                },0.8f);
+                },1f);
+
             }
         }, 1f);
+    }
+
+    public void throwBomb() {
+        Vector2 blinkedPosition = getBlinkPosition();
+        b2Body.setTransform(new Vector2(blinkedPosition), 0);
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                isThrowing = false;
+                isWait = true;
+                waitAction();
+            }
+        },1.25f);
     }
 
     public void waitAction() {
@@ -250,8 +364,23 @@ public class Boss extends Fighter {
         },1f);
     }
 
+
+    public void cancelAction() {
+        if(!isWait) bigAttackCounter++;
+//        isShooting = false;
+//        isMelee = false;
+//        isThrowing = false;
+//        isPrepareBlink = false;
+//        isBlink = false;
+//        isWait = true;
+    }
+
     public boolean checkInFrontOfPlayer() {
         return super.checkIsRunningRight()? player.b2Body.getPosition().x > b2Body.getPosition().x : player.b2Body.getPosition().x < b2Body.getPosition().x;
+    }
+
+    public boolean checkIsAction() {
+        return isWait || isBlink || isPrepareBlink || isMelee || isShooting || isThrowing;
     }
 
     public boolean checkIsMelee(){
@@ -265,12 +394,8 @@ public class Boss extends Fighter {
         this.isSwordCreated = isSwordCreated;
     }
 
-    public void cancelAction() {
-        isShooting = false;
-        isMelee = false;
-        isPrepareBlink = false;
-        isBlink = false;
-        isWait = true;
+    public boolean checkIsShooting(){
+        return isShooting;
     }
 
     public boolean checkIsBulletCreated(){
@@ -279,7 +404,5 @@ public class Boss extends Fighter {
     public void setIsBulletCreated(boolean isBulletCreated){
         this.isBulletCreated = isBulletCreated;
     }
-    public boolean checkIsShooting(){
-        return isShooting;
-    }
+
 }

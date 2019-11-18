@@ -27,6 +27,30 @@ public class WorldContactListener implements ContactListener {
             }
         }
 
+        if(Bullet.class.isAssignableFrom(fixA.getUserData().getClass()) && Bullet.class.isAssignableFrom(fixB.getUserData().getClass())) {
+            Fixture bulletFixture1 = Bullet.class.isAssignableFrom(fixA.getUserData().getClass()) ? fixA : fixB;
+            Fixture bulletFixture2 = fixA == bulletFixture1 ? fixB : fixA;
+
+            Bullet bullet1 = (Bullet)bulletFixture1.getUserData();
+            Bullet bullet2 = (Bullet)bulletFixture1.getUserData();
+            if(bullet1.getTarget().hashCode() != bullet2.getTarget().hashCode()) {
+                bullet1.finish();
+                bullet2.finish();
+            }
+        }
+
+        if(Bullet.class.isAssignableFrom(fixA.getUserData().getClass()) || Bullet.class.isAssignableFrom(fixB.getUserData().getClass())) {
+            Fixture bulletFixture = Bullet.class.isAssignableFrom(fixA.getUserData().getClass()) ? fixA : fixB;
+            Fixture slashedSwordFixture = fixA == bulletFixture ? fixB : fixA;
+            if(slashedSwordFixture.getUserData() != null && SlashedSword.class.isAssignableFrom(slashedSwordFixture.getUserData().getClass())) {
+                Bullet bullet = (Bullet) bulletFixture.getUserData();
+                SlashedSword slashedSword = (SlashedSword) slashedSwordFixture.getUserData();
+                bullet.finish();
+                slashedSword.finish();
+            }
+        }
+
+
         // Slashing Event
         if(SlashedSword.class.isAssignableFrom(fixA.getUserData().getClass()) || SlashedSword.class.isAssignableFrom(fixB.getUserData().getClass())) {
             Fixture slashedSwordFixture = SlashedSword.class.isAssignableFrom(fixA.getUserData().getClass()) ? fixA : fixB;

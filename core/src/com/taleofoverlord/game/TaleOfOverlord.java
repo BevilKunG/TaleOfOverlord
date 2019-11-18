@@ -23,6 +23,10 @@ public class TaleOfOverlord extends Game {
 	public static final int COLLISION_DAMAGE = 5;
 	public static final float SLASH_RANGE = 0.18f;
 	public static final float PUNCH_RANGE = 0.15f;
+	public enum HealthBarStyle {
+		PLAYER_STYLE,
+		BOSS_STYLE
+	}
 
 	public static AssetManager manager;
 

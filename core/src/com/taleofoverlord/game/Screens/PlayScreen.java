@@ -114,27 +114,38 @@ public class PlayScreen implements Screen {
         if(!player.checkIsHurt()) {
             boolean canMove = !player.checkisPunching() && !player.checkisSlashing() && !player.checkisShooting();
             if(canMove) {
-                if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.b2Body.getLinearVelocity().y == 0)
+                if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.b2Body.getLinearVelocity().y == 0) {
                     player.b2Body.applyLinearImpulse(new Vector2(0, 4f), player.b2Body.getWorldCenter(), true);
-                if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2)
+                }
+
+                if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2) {
+                    if(!player.checkIsRunningRight()) player.stopMoving();
                     player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
-                if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2)
+                }
+
+                if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2) {
+                    if(player.checkIsRunningRight()) player.stopMoving();
                     player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
+                }
+
             }
 
             if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !player.checkIsBulletCreated()) {
+                player.stopMoving();
                 player.shoot();
                 bullets.add(new Bullet(this, player, boss));
                 player.setIsBulletCreated(true);
             }
 
             if(Gdx.input.isKeyJustPressed(Input.Keys.S) && !player.checkIsSwordCreated()) {
+                player.stopMoving();
                 player.slash();
                 slashedSwords.add(new SlashedSword(this, player, boss));
                 player.setIsSwordCreated(true);
             }
 
             if(Gdx.input.isKeyJustPressed(Input.Keys.P) && !player.checkIsPunchCreated()) {
+                player.stopMoving();
                 player.punch();
                 punches.add(new Punch(this, player, boss));
                 player.setIsPunchCreated(true);
@@ -187,7 +198,7 @@ public class PlayScreen implements Screen {
 
     public void handleHealth() {
         hud.playerHealthBar.setValue(((float)player.getHealthPoint() / TaleOfOverlord.PLAYER_MAX_HP));
-        hud.bossHealthBar.setValue(((float)boss.getHealthPoint() / TaleOfOverlord.BOSS_MAX_HP));
+        hud.bossHealthBar.setValue(1f-((float)boss.getHealthPoint() / TaleOfOverlord.BOSS_MAX_HP));
         if(!isGameOver && player.getHealthPoint()<= 0) {
             isGameOver = true;
         }

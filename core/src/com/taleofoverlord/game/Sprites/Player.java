@@ -143,7 +143,6 @@ public class Player extends Fighter {
                 break;
         }
 
-//        if(!isHurt) {
             if(((!isHurt && b2Body.getLinearVelocity().x < -TaleOfOverlord.FLIP_EPSILON) || !super.checkIsRunningRight()) && !region.isFlipX() ) {
                 region.flip(true, false);
                 super.setRunningRight(false);
@@ -151,7 +150,6 @@ public class Player extends Fighter {
                 region.flip(true, false);
                  super.setRunningRight(true);
             }
-//        }
 
         stateTimer = currentState == previousState ? stateTimer+delta : 0;
         previousState = currentState;
@@ -185,10 +183,14 @@ public class Player extends Fighter {
         return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? 1 : -1)), b2Body.getPosition().y + 0.12f);
     }
 
+    public Vector2 getBackPosition() {
+        return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? -1 : 1)), b2Body.getPosition().y + 0.12f);
+    }
+
     public void shoot() {
         isShooting = true;
         TaleOfOverlord.manager.get("audio/sounds/player_gunshot.wav", Sound.class).play();
-        b2Body.setLinearVelocity(new Vector2(0, 0));
+//        stopMoving();
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -201,7 +203,7 @@ public class Player extends Fighter {
     public void slash() {
         isSlashing = true;
         TaleOfOverlord.manager.get("audio/sounds/player_slashing.mp3", Sound.class).play();
-        b2Body.setLinearVelocity(new Vector2(0, 0));
+//        stopMoving();
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -214,7 +216,7 @@ public class Player extends Fighter {
     public void punch() {
         isPunching = true;
         TaleOfOverlord.manager.get("audio/sounds/player_punching.mp3", Sound.class).play();
-        b2Body.setLinearVelocity(new Vector2(0, 0));
+//        stopMoving();
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -222,6 +224,10 @@ public class Player extends Fighter {
                 setIsPunchCreated(false);
             }
         }, 0.3f);
+    }
+
+    public void stopMoving() {
+        b2Body.setLinearVelocity(new Vector2(0, 0));
     }
 
     public boolean checkIsJumping() {
@@ -289,9 +295,21 @@ public class Player extends Fighter {
     @Override
     public void recoil() {
         b2Body.applyLinearImpulse(new Vector2(1f * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                stopMoving();
+            }
+        }, 0.2f);
     }
 
     public void recoil(Vector2 recoilFactor) {
         b2Body.applyLinearImpulse(new Vector2(1f * recoilFactor.x * (checkIsRunningRight()? -1:1), 1f * recoilFactor.y), b2Body.getWorldCenter(), true);
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                stopMoving();
+            }
+        }, 0.2f);
     }
 }

@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.taleofoverlord.game.Screens.PlayScreen;
+import com.taleofoverlord.game.Sprites.Player;
 import com.taleofoverlord.game.TaleOfOverlord;
 
 public class Hud {
@@ -50,9 +51,9 @@ public class Hud {
         table = new Table();
         table.top();
         table.setFillParent(true);
-        playerHealthBar = new HealthBar(450, 14, Color.GREEN);
+        playerHealthBar = new HealthBar(450, 14, TaleOfOverlord.HealthBarStyle.PLAYER_STYLE);
 
-        bossHealthBar = new HealthBar(450, 14, Color.YELLOW);
+        bossHealthBar = new HealthBar(450, 14, TaleOfOverlord.HealthBarStyle.BOSS_STYLE);
 
         table.add(playerHealthBar).padTop(16).padRight(60);
         table.add(bossHealthBar).padTop(16);
