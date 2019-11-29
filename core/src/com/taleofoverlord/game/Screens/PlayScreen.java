@@ -25,6 +25,8 @@ import com.taleofoverlord.game.Sprites.*;
 import com.taleofoverlord.game.TaleOfOverlord;
 import com.taleofoverlord.game.Tools.WorldContactListener;
 
+import java.util.ArrayList;
+
 public class PlayScreen implements Screen {
     private TaleOfOverlord game;
 
@@ -64,7 +66,7 @@ public class PlayScreen implements Screen {
 
         // Map
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("level3.tmx");
+        map = mapLoader.load("level4.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map, 1 / TaleOfOverlord.PPM);
 
         // Game Cam Position
@@ -161,7 +163,7 @@ public class PlayScreen implements Screen {
                 bullets.removeValue(bullet, true);
                 world.destroyBody(bullet.b2Body);
                 bullet = null;
-            }
+            }else bullet.update();
         }
     }
 
@@ -219,6 +221,7 @@ public class PlayScreen implements Screen {
         gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         mapRenderer.setView(gameCam);
+
     }
 
     private void handleBoss() {
@@ -247,11 +250,19 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         player.draw(game.batch);
         boss.draw(game.batch);
+
+        for(Bullet bullet:bullets){
+            if(bullet.checkIsFinished())
+                bullet.draw(game.batch);
+        }
+
         game.batch.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
         hud.stage.act();
+
+
     }
 
     public TextureAtlas getPlayerAtlas() {

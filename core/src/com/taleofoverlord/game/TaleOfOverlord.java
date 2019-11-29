@@ -40,6 +40,7 @@ public class TaleOfOverlord extends Game {
 		manager.load("audio/sounds/player_slashing.mp3", Sound.class);
 		manager.load("audio/sounds/boss_melee.mp3", Sound.class);
 		manager.load("audio/sounds/player_punching.mp3", Sound.class);
+		manager.load("audio/sounds/boss_granade.wav",Sound.class);
 		manager.finishLoading();
 
 		setScreen(new PlayScreen(this));

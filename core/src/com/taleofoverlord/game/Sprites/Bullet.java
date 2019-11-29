@@ -21,6 +21,8 @@ public class Bullet extends Sprite {
     private double angle;
 
     public Bullet(PlayScreen screen,Fighter shooter, Fighter target) {
+        super(new Texture("Bullet_player.png"));
+        setSize(1,1);
         this.world = screen.getWorld();
         this.shooter = shooter;
         this.target = target;
@@ -29,6 +31,8 @@ public class Bullet extends Sprite {
     }
 
     public Bullet(PlayScreen screen,Fighter shooter, Fighter target,double angle){
+        super(new Texture("Bullet_boss.png"));
+        setSize(1,1);
         this.world = screen.getWorld();
         this.shooter = shooter;
         this.target = target;
@@ -62,6 +66,7 @@ public class Bullet extends Sprite {
     }
 
     public void update() {
+        setPosition((b2Body.getPosition().x - getWidth() / 2) , b2Body.getPosition().y - getHeight() / 2);
     }
 
     public Fighter getTarget() {
