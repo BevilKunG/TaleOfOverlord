@@ -1,0 +1,101 @@
+
+boss_one.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+boss_transform2
+  rotate: false
+  xy: 1, 778
+  size: 757, 127
+  orig: 757, 127
+  offset: 0, 0
+  index: -1
+boss_transform1
+  rotate: false
+  xy: 1, 648
+  size: 747, 128
+  orig: 747, 128
+  offset: 0, 0
+  index: -1
+boss_ulti2
+  rotate: false
+  xy: 1, 519
+  size: 744, 127
+  orig: 744, 127
+  offset: 0, 0
+  index: -1
+boss_died1
+  rotate: false
+  xy: 1, 390
+  size: 727, 127
+  orig: 727, 127
+  offset: 0, 0
+  index: -1
+boss_shoot1
+  rotate: false
+  xy: 1, 261
+  size: 670, 127
+  orig: 670, 127
+  offset: 0, 0
+  index: -1
+boss_blink
+  rotate: false
+  xy: 1, 131
+  size: 640, 128
+  orig: 640, 128
+  offset: 0, 0
+  index: -1
+boss_prepareBlink
+  rotate: false
+  xy: 1, 1
+  size: 640, 128
+  orig: 640, 128
+  offset: 0, 0
+  index: -1
+boss_melee
+  rotate: false
+  xy: 760, 777
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
+boss_stand
+  rotate: false
+  xy: 750, 647
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+
+boss_one2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+boss_throwing
+  rotate: false
+  xy: 1, 389
+  size: 640, 128
+  orig: 640, 128
+  offset: 0, 0
+  index: -1
+boss_died2
+  rotate: false
+  xy: 1, 260
+  size: 637, 127
+  orig: 637, 127
+  offset: 0, 0
+  index: -1
+boss_ulti1
+  rotate: false
+  xy: 1, 131
+  size: 600, 127
+  orig: 600, 127
+  offset: 0, 0
+  index: -1
+boss_shoot2
+  rotate: false
+  xy: 1, 1
+  size: 491, 128
+  orig: 491, 128
+  offset: 0, 0
+  index: -1

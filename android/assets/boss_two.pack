@@ -1,0 +1,80 @@
+
+boss_two.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+boss2_died
+  rotate: false
+  xy: 1, 776
+  size: 768, 128
+  orig: 768, 128
+  offset: 0, 0
+  index: -1
+boss2_stand
+  rotate: false
+  xy: 1, 646
+  size: 640, 128
+  orig: 640, 128
+  offset: 0, 0
+  index: -1
+boss2_blink2
+  rotate: false
+  xy: 1, 517
+  size: 632, 127
+  orig: 632, 127
+  offset: 0, 0
+  index: -1
+boss2_blink1
+  rotate: false
+  xy: 1, 388
+  size: 521, 127
+  orig: 521, 127
+  offset: 0, 0
+  index: -1
+boss2_teleport
+  rotate: false
+  xy: 1, 259
+  size: 517, 127
+  orig: 517, 127
+  offset: 0, 0
+  index: -1
+boss2_transform2
+  rotate: false
+  xy: 1, 130
+  size: 515, 127
+  orig: 515, 127
+  offset: 0, 0
+  index: -1
+boss2_melee
+  rotate: false
+  xy: 1, 1
+  size: 514, 127
+  orig: 514, 127
+  offset: 0, 0
+  index: -1
+boss2_bullet
+  rotate: false
+  xy: 771, 776
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+boss2_prepareTeleport
+  rotate: false
+  xy: 520, 259
+  size: 501, 127
+  orig: 501, 127
+  offset: 0, 0
+  index: -1
+
+boss_two2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+boss2_transform1
+  rotate: false
+  xy: 1, 1
+  size: 511, 127
+  orig: 511, 127
+  offset: 0, 0
+  index: -1
