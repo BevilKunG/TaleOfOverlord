@@ -4,7 +4,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.taleofoverlord.game.Screens.PlayScreen;
 import com.taleofoverlord.game.TaleOfOverlord;
@@ -31,10 +30,12 @@ public class Boss extends Fighter {
     public State previousState;
     public float stateTimer;
 
-    private boolean isWait;
+    private boolean isWait, isTransform;
     private boolean isSwordCreated;
     private boolean isBulletCreated;
     private boolean isBluffBlink;
+
+    private float waitingTime;
 
     public int bigAttackCounter, bigAttackLeft;
 
@@ -67,8 +68,11 @@ public class Boss extends Fighter {
         bigAttackLeft = 0;
 
         isWait = false;
+        isTransform = false;
         isSwordCreated = false;
         isBluffBlink = false;
+
+        waitingTime = 3f;
     }
 
     private void define() {
@@ -128,9 +132,16 @@ public class Boss extends Fighter {
         return getBlinkAttack();
     }
 
+    private State getFinalAttack() {
+        if(!isTransform) return State.TRANSFORMING;
+        return State.FINALBLINK;
+    }
+
     private State getPatternState() {
         State state = State.STANDING;
+//        state = getFinalAttack();
         if(getPercentHP()>60) {
+            setWaitingTime(2f);
             if(bigAttackCounter%10!=0) state = getTinyAttack();
             if(bigAttackCounter%10==0 && bigAttackLeft==0) {
                 bigAttackLeft = 2;
@@ -142,16 +153,12 @@ public class Boss extends Fighter {
                 bigAttackLeft--;
             }
         } else if(getPercentHP()>40) {
+            setWaitingTime(1f);
             if(randomPercent()<=60) state = getBlinkAttack();
             else state = getBluffBlink();
         } else {
-            bossTransform.active();
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    bossTransform.finish();
-                }
-            }, 5.5f);
+            setWaitingTime(1.5f);
+            state = getFinalAttack();
         }
         return state;
     }
@@ -178,6 +185,12 @@ public class Boss extends Fighter {
                 case THROWING: {
                     bossThrow.active();
                     throwBomb();
+                    break;
+                }
+                case TRANSFORMING: {
+                    isTransform = true;
+                    bossTransform.active();
+                    transform();
                     break;
                 }
                 case DEAD: bossDead.active();
@@ -213,7 +226,7 @@ public class Boss extends Fighter {
             case FINALULTIMATE: return (TextureRegion) bossFinalUltimate.animation.getKeyFrame(stateTimer, true);
             case DEAD: return (TextureRegion) bossDead.animation.getKeyFrame(stateTimer, true);
             case STANDING:
-            default: return bossStand;
+            default: return !isTransform? bossStand : bossFinalStand;
         }
     }
 
@@ -264,6 +277,16 @@ public class Boss extends Fighter {
         b2Body.setTransform(blinkedPosition, 0);
     }
 
+    private void transform() {
+        bossTransform.active();
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                bossTransform.finish();
+            }
+        }, 5.5f);
+    }
+
     private void bluffBlink() {
         Timer.schedule(new Timer.Task() {
             @Override
@@ -278,7 +301,6 @@ public class Boss extends Fighter {
                         Timer.schedule(new Timer.Task() {
                             @Override
                             public void run() {
-                                isWait = true;
                                 waitAction();
                             }
                         },0.2f);
@@ -297,15 +319,12 @@ public class Boss extends Fighter {
                     @Override
                     public void run() {
                         bossPrepareBlink.finish();
-//                        isMelee = true;
                         bossMelee.active();
                         TaleOfOverlord.manager.get("audio/sounds/boss_melee.mp3", Sound.class).play();
                         Timer.schedule(new Timer.Task() {
                             @Override
                             public void run() {
-//                                isMelee = false;
                                 bossMelee.finish();
-                                isWait = true;
                                 waitAction();
                                 setIsSwordCreated(false);
                             }
@@ -331,7 +350,6 @@ public class Boss extends Fighter {
                             @Override
                             public void run() {
                                 bossShoot.finish();
-                                isWait = true;
                                 waitAction();
                                 setIsBulletCreated(false);
                             }
@@ -358,7 +376,6 @@ public class Boss extends Fighter {
                             @Override
                             public void run() {
                                 bossFinalUltimate.finish();
-                                isWait = true;
                                 waitAction();
                                 setIsSwordCreated(false);
                             }
@@ -375,19 +392,20 @@ public class Boss extends Fighter {
             @Override
             public void run() {
                 bossThrow.finish();
-                isWait = true;
                 waitAction();
             }
         },1.25f);
     }
 
     private void waitAction() {
+        // speed up
+        isWait = true;
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 isWait = false;
             }
-        },1f);
+        }, waitingTime);
     }
 
 
@@ -402,6 +420,10 @@ public class Boss extends Fighter {
 
     public float getPercentHP() {
         return ((float)getHealthPoint()/TaleOfOverlord.BOSS_MAX_HP)*100;
+    }
+
+    private void setWaitingTime(float waitingTime) {
+        this.waitingTime = waitingTime;
     }
 
     @Override
@@ -440,11 +462,11 @@ public class Boss extends Fighter {
 
     public void cancelAction() {
         if(!isWait) bigAttackCounter++;
-        bossShoot.finish();
-        bossMelee.finish();
-        bossThrow.finish();
-        bossPrepareBlink.finish();
-        bossBlink.finish();
+//        bossShoot.finish();
+//        bossMelee.finish();
+//        bossThrow.finish();
+//        bossPrepareBlink.finish();
+//        bossBlink.finish();
 //        isWait = true;
     }
 
