@@ -5,15 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -22,10 +19,15 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.taleofoverlord.game.Scenes.Hud;
 import com.taleofoverlord.game.Sprites.*;
+import com.taleofoverlord.game.Sprites.Bosses.Boss;
+import com.taleofoverlord.game.Sprites.Bosses.BossOne;
+import com.taleofoverlord.game.Sprites.Bosses.BossTwo;
+import com.taleofoverlord.game.Sprites.Weapons.Bullet;
+import com.taleofoverlord.game.Sprites.Weapons.Punch;
+import com.taleofoverlord.game.Sprites.Weapons.SlashedSword;
+import com.taleofoverlord.game.Sprites.Weapons.Thorn;
 import com.taleofoverlord.game.TaleOfOverlord;
 import com.taleofoverlord.game.Tools.WorldContactListener;
-
-import java.util.ArrayList;
 
 public class PlayScreen implements Screen {
     private TaleOfOverlord game;
@@ -45,9 +47,9 @@ public class PlayScreen implements Screen {
     private Array<Bullet> bullets;
     private Array<SlashedSword> slashedSwords;
     private Array<Punch> punches;
+    private Array<Thorn> thorns;
 
     private TextureAtlas playerAtlas;
-    private TextureAtlas bossAtlas;
 
     public boolean isGameOver;
 
@@ -58,7 +60,6 @@ public class PlayScreen implements Screen {
         isGameOver = false;
 
         playerAtlas = new TextureAtlas("player.pack");
-        bossAtlas = new TextureAtlas("boss.pack");
 
         // Game Cam and Viewport
         gameCam = new OrthographicCamera();
@@ -98,10 +99,11 @@ public class PlayScreen implements Screen {
 
         // Player and Boss
         player = new Player( this);
-        boss = new Boss(this);
+        boss = new BossTwo(this);
         bullets = new Array<Bullet>();
         slashedSwords = new Array<SlashedSword>();
         punches = new Array<Punch>();
+        thorns = new Array<Thorn>();
 
         // Hud
         hud = new Hud(game.batch);
@@ -132,40 +134,53 @@ public class PlayScreen implements Screen {
 
             }
 
-            if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !player.checkIsBulletCreated()) {
-                player.stopMoving();
-                player.shoot();
-                bullets.add(new Bullet(this, player, boss));
-                player.setIsBulletCreated(true);
-            }
+//            if(player.checkMana()) {
+                if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !player.checkIsBulletCreated()) {
+                    player.stopMoving();
+                    player.shoot();
+                    bullets.add(new Bullet(this, player, boss));
+                    player.setIsBulletCreated(true);
+                }
 
-            if(Gdx.input.isKeyJustPressed(Input.Keys.S) && !player.checkIsSwordCreated()) {
-                player.stopMoving();
-                player.slash();
-                slashedSwords.add(new SlashedSword(this, player, boss));
-                player.setIsSwordCreated(true);
-            }
+                if(Gdx.input.isKeyJustPressed(Input.Keys.S) && !player.checkIsSwordCreated()) {
+                    player.stopMoving();
+                    player.slash();
+                    slashedSwords.add(new SlashedSword(this, player, boss));
+                    player.setIsSwordCreated(true);
+                }
 
-            if(Gdx.input.isKeyJustPressed(Input.Keys.P) && !player.checkIsPunchCreated()) {
-                player.stopMoving();
-                player.punch();
-                punches.add(new Punch(this, player, boss));
-                player.setIsPunchCreated(true);
+                if(Gdx.input.isKeyJustPressed(Input.Keys.P) && !player.checkIsPunchCreated()) {
+                    player.stopMoving();
+                    player.punch();
+                    punches.add(new Punch(this, player, boss));
+                    player.setIsPunchCreated(true);
+                }
             }
-        }
+//        }
 
 
     }
 
     public void handleBullet() {
         for(Bullet bullet:bullets) {
+            bullet.update();
             if(bullet.checkIsFinished()) {
                 bullets.removeValue(bullet, true);
                 world.destroyBody(bullet.b2Body);
-                bullet = null;
-            }else bullet.update();
+            }
         }
     }
+
+    public void handleThorn() {
+        for(Bullet thorn:thorns) {
+            thorn.update();
+            if(thorn.checkIsFinished()) {
+                thorns.removeValue((Thorn) thorn, true);
+                world.destroyBody(thorn.b2Body);
+            }
+        }
+    }
+
 
     public void handlePunch() {
         for(Punch punch:punches) {
@@ -189,12 +204,16 @@ public class PlayScreen implements Screen {
 
     public void handleBossBullet() {
         if(boss.checkIsShooting() && !boss.checkIsBulletCreated()) {
-            bullets.add(new Bullet(this, boss, player,0));
-            bullets.add(new Bullet(this, boss, player,30));
-            bullets.add(new Bullet(this, boss, player,45));
-            bullets.add(new Bullet(this, boss, player,60));
-            boss.setIsBulletCreated(true);
+            if(BossOne.class.isAssignableFrom(boss.getClass())) {
+                bullets.add(new Bullet(this, boss, player, 0));
+                bullets.add(new Bullet(this, boss, player, 30));
+                bullets.add(new Bullet(this, boss, player, 45));
+                bullets.add(new Bullet(this, boss, player, 60));
 
+            } else if(BossTwo.class.isAssignableFrom(boss.getClass())) {
+                thorns.add(new Thorn(this));
+            }
+            boss.setIsBulletCreated(true);
         }
     }
 
@@ -211,6 +230,7 @@ public class PlayScreen implements Screen {
         handleHealth();
         handleInput(delta);
         handleBullet();
+        handleThorn();
         handleSlashedSword();
         handlePunch();
         handleBossBullet();
@@ -251,9 +271,15 @@ public class PlayScreen implements Screen {
         player.draw(game.batch);
         boss.draw(game.batch);
 
+
         for(Bullet bullet:bullets){
-            if(bullet.checkIsFinished())
+            if(!bullet.checkIsFinished())
                 bullet.draw(game.batch);
+        }
+
+        for(Bullet thorn:thorns){
+            if(!thorn.checkIsFinished())
+                thorn.draw(game.batch);
         }
 
         game.batch.end();
@@ -268,15 +294,16 @@ public class PlayScreen implements Screen {
     public TextureAtlas getPlayerAtlas() {
         return playerAtlas;
     }
-    public TextureAtlas getBossAtlas() {
-        return bossAtlas;
-    }
 
     public World getWorld() {
         return world;
     }
 
     public Player getPlayer() { return player; }
+
+    public Boss getBoss() {
+        return boss;
+    }
 
     @Override
     public void resize(int width, int height) {

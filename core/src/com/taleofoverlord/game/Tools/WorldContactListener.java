@@ -1,9 +1,13 @@
 package com.taleofoverlord.game.Tools;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.taleofoverlord.game.Sprites.*;
+import com.taleofoverlord.game.Sprites.Bosses.Boss;
+import com.taleofoverlord.game.Sprites.Bosses.BossOne;
+import com.taleofoverlord.game.Sprites.Weapons.Bullet;
+import com.taleofoverlord.game.Sprites.Weapons.Punch;
+import com.taleofoverlord.game.Sprites.Weapons.SlashedSword;
 import com.taleofoverlord.game.TaleOfOverlord;
 
 public class WorldContactListener implements ContactListener {
@@ -19,7 +23,7 @@ public class WorldContactListener implements ContactListener {
                 Bullet bullet = (Bullet) bulletFixture.getUserData();
                 Fighter target = (Fighter) targetFixture.getUserData();
                 if(bullet.getTarget() == target)  {
-                    if(checkCanAttack(target)) {
+                    if(checkCanAttack(target) && checkIgnoreBullet(target)) {
                         target.decreaseHealthPoint(bullet.getDamage());
                         target.cancelAction();
                         target.recoil();
@@ -100,7 +104,7 @@ public class WorldContactListener implements ContactListener {
                 Boss boss = (Boss) bossFixture.getUserData();
                 player.decreaseHealthPoint(TaleOfOverlord.COLLISION_DAMAGE);
                 player.cancelAction();
-                if(player.b2Body.getPosition().y > boss.b2Body.getPosition().y) player.recoil(new Vector2(3f, 2f));
+                if(player.b2Body.getPosition().y > boss.getB2Body().getPosition().y) player.recoil(new Vector2(3f, 2f));
                 else player.recoil();
             }
         }
@@ -124,5 +128,9 @@ public class WorldContactListener implements ContactListener {
 
     public boolean checkCanAttack(Fighter target) {
         return (Player.class.isAssignableFrom(target.getClass()) && !((Player)target).checkIsHurt()) || Boss.class.isAssignableFrom(target.getClass());
+    }
+
+    public boolean checkIgnoreBullet(Fighter target) {
+        return Boss.class.isAssignableFrom(target.getClass()) && !((Boss) target).checkIsIgnoreBullet();
     }
 }

@@ -1,4 +1,4 @@
-package com.taleofoverlord.game.Sprites;
+package com.taleofoverlord.game.Sprites.Bosses;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -6,76 +6,40 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
 import com.taleofoverlord.game.Screens.PlayScreen;
+import com.taleofoverlord.game.Sprites.Animations.AnimationFactory;
+import com.taleofoverlord.game.Sprites.Animations.AnimationPack;
+import com.taleofoverlord.game.Sprites.Animations.AtlasFactory;
+import com.taleofoverlord.game.Sprites.Animations.StandFactory;
+import com.taleofoverlord.game.Sprites.Player;
 import com.taleofoverlord.game.TaleOfOverlord;
 
-public class Boss extends Fighter {
-    public World world;
-    public Body b2Body;
-
-    private Vector2 currentPosition;
-    private Player player;
-
-    private AnimationFactory animationFactory;
-
-    private TextureRegion bossStand, bossFinalStand;
+public class BossOne extends Boss {
     private AnimationPack bossMelee, bossShoot, bossPrepareBlink,
             bossBlink, bossThrow, bossTransform,
             bossFinalBlink, bossFinalUltimate, bossDead;
 
-    public enum State { STANDING, MELEE, SHOOTING,
-        PREPAREBLINK, BLINK, THROWING,
-        TRANSFORMING, FINALBLINK, FINALULTIMATE,
-        DEAD };
-    public State currentState;
-    public State previousState;
-    public float stateTimer;
-
-    private boolean isWait, isTransform;
-    private boolean isSwordCreated;
-    private boolean isBulletCreated;
     private boolean isBluffBlink;
-
-    private float waitingTime;
 
     public int bigAttackCounter, bigAttackLeft;
 
-    public Boss(PlayScreen screen) {
-        super(screen.getBossAtlas().findRegion("boss_stand"),false);
+    public BossOne(PlayScreen screen) {
+        super(StandFactory.getFactory().getBossOneStand(),false);
 
-        init(screen);
+        super.init(screen);
+        bigAttackCounter = 1;
+        bigAttackLeft = 0;
+
         define();
         createAnimationPacks();
     }
 
-    private void init(PlayScreen screen) {
-        this.world = screen.getWorld();
-        player = screen.getPlayer();
-
-        currentPosition = new Vector2(512 / TaleOfOverlord.PPM, 64 / TaleOfOverlord.PPM);
-
-        currentState = State.STANDING;
-        previousState = State.STANDING;
-        stateTimer = 0;
-
-        animationFactory = AnimationFactory.getFactory(screen);
-
-        bossStand = new TextureRegion(screen.getBossAtlas().findRegion("boss_stand"), 0, 0, 128, 128);
-        bossFinalStand = new TextureRegion(screen.getBossAtlas().findRegion("boss_transform2"), 128 * 5, 0, 128, 128);
-        setRegion(bossStand);
-        setBounds(0, 0, 64 / TaleOfOverlord.PPM, 64 / TaleOfOverlord.PPM);
-
-        bigAttackCounter = 1;
-        bigAttackLeft = 0;
-
-        isWait = false;
-        isTransform = false;
-        isSwordCreated = false;
-        isBluffBlink = false;
-
-        waitingTime = 3f;
+    @Override
+    protected void createBossStand() {
+        bossStand = StandFactory.getFactory().getBossOneStand();
+        bossFinalStand = StandFactory.getFactory().getBossOneFinalStand();
     }
 
-    private void define() {
+    protected void define() {
         BodyDef bdef = new BodyDef();
         bdef.position.set(new Vector2(currentPosition.x, currentPosition.y));
         bdef.type = BodyDef.BodyType.DynamicBody;
@@ -91,22 +55,15 @@ public class Boss extends Fighter {
     }
 
     private void createAnimationPacks() {
-        bossMelee = animationFactory.getAnimationPack(AnimationFactory.AnimationType.BOSSMELEE);
-
-        isBulletCreated = false;
-        bossShoot = animationFactory.getAnimationPack(AnimationFactory.AnimationType.BOSSSHOOT);
-
-        bossPrepareBlink = animationFactory.getAnimationPack(AnimationFactory.AnimationType.BOSSPREPAREBLINK);
-        bossBlink = animationFactory.getAnimationPack(AnimationFactory.AnimationType.BOSSBLINK);
-        bossThrow = animationFactory.getAnimationPack(AnimationFactory.AnimationType.BOSSTHROW);
-        bossTransform = animationFactory.getAnimationPack(AnimationFactory.AnimationType.BOSSTRANSFORM);
-        bossFinalBlink = animationFactory.getAnimationPack(AnimationFactory.AnimationType.BOSSFINALBLINK);
-        bossFinalUltimate = animationFactory.getAnimationPack(AnimationFactory.AnimationType.BOSSFINALULTIMATE);
-        bossDead = animationFactory.getAnimationPack(AnimationFactory.AnimationType.BOSSDEAD);
-    }
-
-    private int randomPercent() {
-        return (int)(Math.random()*100);
+        bossMelee = animationFactory.getBossOneAnimationPack(AnimationFactory.AnimationType.BOSSMELEE);
+        bossShoot = animationFactory.getBossOneAnimationPack(AnimationFactory.AnimationType.BOSSSHOOT);
+        bossPrepareBlink = animationFactory.getBossOneAnimationPack(AnimationFactory.AnimationType.BOSSPREPAREBLINK);
+        bossBlink = animationFactory.getBossOneAnimationPack(AnimationFactory.AnimationType.BOSSBLINK);
+        bossThrow = animationFactory.getBossOneAnimationPack(AnimationFactory.AnimationType.BOSSTHROW);
+        bossTransform = animationFactory.getBossOneAnimationPack(AnimationFactory.AnimationType.BOSSTRANSFORM);
+        bossFinalBlink = animationFactory.getBossOneAnimationPack(AnimationFactory.AnimationType.BOSSFINALBLINK);
+        bossFinalUltimate = animationFactory.getBossOneAnimationPack(AnimationFactory.AnimationType.BOSSFINALULTIMATE);
+        bossDead = animationFactory.getBossOneAnimationPack(AnimationFactory.AnimationType.BOSSDEAD);
     }
 
 
@@ -139,7 +96,6 @@ public class Boss extends Fighter {
 
     private State getPatternState() {
         State state = State.STANDING;
-//        state = getFinalAttack();
         if(getPercentHP()>60) {
             setWaitingTime(2f);
             if(bigAttackCounter%10!=0) state = getTinyAttack();
@@ -198,11 +154,6 @@ public class Boss extends Fighter {
             }
     }
 
-    private float getOffset() {
-        return 0.10f * (super.checkIsRunningRight() ? 1 : -1);
-    }
-
-
     private TextureRegion getFrame(float delta) {
         currentState = getState();
 
@@ -227,16 +178,6 @@ public class Boss extends Fighter {
             case DEAD: return (TextureRegion) bossDead.animation.getKeyFrame(stateTimer, true);
             case STANDING:
             default: return !isTransform? bossStand : bossFinalStand;
-        }
-    }
-
-    private void handleFlipingRegion(TextureRegion region) {
-        if(!checkInFrontOfPlayer()) {
-            region.flip(true, false);
-            super.setRunningRight(!checkIsRunningRight());
-        }
-        if(this.checkIsRunningRight() != region.isFlipX()) {
-            region.flip(true, false);
         }
     }
 
@@ -397,67 +338,12 @@ public class Boss extends Fighter {
         },1.25f);
     }
 
-    private void waitAction() {
-        // speed up
-        isWait = true;
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                isWait = false;
-            }
-        }, waitingTime);
-    }
-
-
-
     public void update(float delta) {
         if(!checkIsAction()) {
             runPattern(super.getHealthPoint());
         }
         setPosition((b2Body.getPosition().x - getWidth() / 2) + getOffset(), b2Body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta));
-    }
-
-    public float getPercentHP() {
-        return ((float)getHealthPoint()/TaleOfOverlord.BOSS_MAX_HP)*100;
-    }
-
-    private void setWaitingTime(float waitingTime) {
-        this.waitingTime = waitingTime;
-    }
-
-    @Override
-    public Vector2 getFrontPosition() {
-        return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? 1 : -1)), b2Body.getPosition().y);
-    }
-
-    public Vector2 getBackPosition() {
-        return new Vector2(b2Body.getPosition().x + (0.24f * (super.checkIsRunningRight()? -1 : 1)), b2Body.getPosition().y);
-    }
-
-    @Override
-    public void recoil() {
-        b2Body.applyLinearImpulse(new Vector2(1f * (checkIsRunningRight()? -1:1), 0), b2Body.getWorldCenter(), true);
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                stopMoving();
-            }
-        }, 0.2f);
-    }
-
-    public void recoil(Vector2 recoilFactor) {
-        b2Body.applyLinearImpulse(new Vector2(1f * recoilFactor.x * (checkIsRunningRight()? -1:1), 1f * recoilFactor.y), b2Body.getWorldCenter(), true);
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                stopMoving();
-            }
-        }, 0.2f);
-    }
-
-    public void stopMoving() {
-        b2Body.setLinearVelocity(new Vector2(0, 0));
     }
 
     public void cancelAction() {
@@ -468,10 +354,6 @@ public class Boss extends Fighter {
 //        bossPrepareBlink.finish();
 //        bossBlink.finish();
 //        isWait = true;
-    }
-
-    public boolean checkInFrontOfPlayer() {
-        return super.checkIsRunningRight()? player.b2Body.getPosition().x > b2Body.getPosition().x : player.b2Body.getPosition().x < b2Body.getPosition().x;
     }
 
     public boolean checkIsAction() {
@@ -486,25 +368,13 @@ public class Boss extends Fighter {
                 bossFinalUltimate.isActive;
     }
 
-    public boolean checkIsMelee(){
-        return  bossMelee.isActive;
+    @Override
+    public boolean checkIsMelee() {
+        return bossMelee.isActive || bossFinalUltimate.isActive;
     }
 
-    public boolean checkIsSwordCreated(){
-        return isSwordCreated;
-    }
-    public void setIsSwordCreated(boolean isSwordCreated){
-        this.isSwordCreated = isSwordCreated;
-    }
-
-    public boolean checkIsShooting(){
+    @Override
+    public boolean checkIsShooting() {
         return bossShoot.isActive;
-    }
-
-    public boolean checkIsBulletCreated(){
-        return  isBulletCreated;
-    }
-    public void setIsBulletCreated(boolean isBulletCreated){
-        this.isBulletCreated = isBulletCreated;
     }
 }

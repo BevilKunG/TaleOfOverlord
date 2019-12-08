@@ -1,6 +1,5 @@
 package com.taleofoverlord.game.Sprites;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -9,13 +8,15 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.taleofoverlord.game.Screens.PlayScreen;
+import com.taleofoverlord.game.Sprites.Animations.StandFactory;
+import com.taleofoverlord.game.Sprites.Bosses.BossOne;
 import com.taleofoverlord.game.TaleOfOverlord;
 
 public class Player extends Fighter {
 
     public World world;
     public Body b2Body;
-    private Boss boss;
+    private BossOne boss;
 
 
     private TextureRegion playerStand, playerJump;
@@ -26,6 +27,8 @@ public class Player extends Fighter {
     public State previousState;
 
     public float stateTimer;
+//    public float mana;
+//    private boolean isIncreseMana;
 
     private boolean isShooting, isBulletCreated;
     private boolean isSlashing, isSwordCreated;
@@ -34,7 +37,7 @@ public class Player extends Fighter {
 
 
     public Player(PlayScreen screen) {
-        super(screen.getPlayerAtlas().findRegion("player_stand"), true);
+        super(StandFactory.getFactory().getPlayerStand(), true);
         this.world = screen.getWorld();
 
 
@@ -97,7 +100,7 @@ public class Player extends Fighter {
 
 
         define();
-        playerStand = new TextureRegion(getTexture(), 0, 0, 128, 128);
+        playerStand = StandFactory.getFactory().getPlayerStand();
         playerJump = new TextureRegion(screen.getPlayerAtlas().findRegion("player_jump"), 128, 0, 128, 128);
         setBounds(0, 0, 64 / TaleOfOverlord.PPM, 64 / TaleOfOverlord.PPM);
         setRegion(playerStand);
@@ -119,10 +122,12 @@ public class Player extends Fighter {
 
         //Player Health Point
         super.setHealthPoint(TaleOfOverlord.PLAYER_MAX_HP);
-
+//        setMana(100);
+//        isIncreseMana = false;
     }
 
     public void update(float delta) {
+//        increaseMana();
         setPosition((b2Body.getPosition().x - getWidth() / 2) + getOffset(), b2Body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta));
     }
@@ -202,6 +207,7 @@ public class Player extends Fighter {
 
     public void shoot() {
         isShooting = true;
+//        decreaseMana(25);
         TaleOfOverlord.manager.get("audio/sounds/player_gunshot.wav", Sound.class).play();
         Timer.schedule(new Timer.Task() {
             @Override
@@ -214,6 +220,7 @@ public class Player extends Fighter {
 
     public void slash() {
         isSlashing = true;
+//        decreaseMana(20);
         TaleOfOverlord.manager.get("audio/sounds/player_slashing.mp3", Sound.class).play();
         Timer.schedule(new Timer.Task() {
             @Override
@@ -226,6 +233,7 @@ public class Player extends Fighter {
 
     public void punch() {
         isPunching = true;
+//        decreaseMana(5);
         TaleOfOverlord.manager.get("audio/sounds/player_punching.mp3", Sound.class).play();
         Timer.schedule(new Timer.Task() {
             @Override
@@ -326,4 +334,32 @@ public class Player extends Fighter {
             }
         }, 0.2f);
     }
+
+//    private void setMana(float mana) {
+//        this.mana = mana;
+//    }
+//    private void increaseMana() {
+//        if(mana < 100 && !isIncreseMana) {
+//            Timer.schedule(new Timer.Task() {
+//                @Override
+//                public void run() {
+//                    isIncreseMana = true;
+//                }
+//            },10f);
+//        }
+//        if(isIncreseMana) {
+//            if(mana + 10 < 100) mana += 10;
+//            else mana = 100;
+//            isIncreseMana = false;
+//        }
+//    }
+//    private void decreaseMana(float x) {
+//        mana -= x;
+//    }
+//    public float getMana() {
+//        return mana;
+//    }
+//    public boolean checkMana() {
+//        return mana > 0;
+//    }
 }

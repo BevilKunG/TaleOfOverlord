@@ -1,4 +1,4 @@
-package com.taleofoverlord.game.Sprites;
+package com.taleofoverlord.game.Sprites.Animations;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 

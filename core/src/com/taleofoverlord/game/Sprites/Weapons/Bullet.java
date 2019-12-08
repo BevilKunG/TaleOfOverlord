@@ -1,12 +1,14 @@
-package com.taleofoverlord.game.Sprites;
+package com.taleofoverlord.game.Sprites.Weapons;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
 import com.taleofoverlord.game.Screens.PlayScreen;
+import com.taleofoverlord.game.Sprites.Fighter;
 import com.taleofoverlord.game.TaleOfOverlord;
 
 public class Bullet extends Sprite {
@@ -15,6 +17,7 @@ public class Bullet extends Sprite {
 
 //    public Player player;
 
+//    private TextureRegion bulletTexture;
     private Fighter shooter;
     private Fighter target;
     private int damage;
@@ -22,17 +25,18 @@ public class Bullet extends Sprite {
     private double angle;
 
     public Bullet(PlayScreen screen,Fighter shooter, Fighter target) {
-        super(new Texture("Bullet_player.png"));
+        super(new Texture("bullet.png"), 0, 0, 128, 128);
         setSize(1,1);
         this.world = screen.getWorld();
         this.shooter = shooter;
         this.target = target;
         this.angle = 0;
+
         define();
     }
 
     public Bullet(PlayScreen screen,Fighter shooter, Fighter target,double angle){
-        super(new Texture("Bullet_boss.png"));
+        super(new TextureRegion(new Texture("bullet.png")), 0, 0, 128, 128);
         setSize(1,1);
         this.world = screen.getWorld();
         this.shooter = shooter;
@@ -55,8 +59,11 @@ public class Bullet extends Sprite {
         shape.setRadius(5 / TaleOfOverlord.PPM);
         fdef.shape = shape;
         b2Body.createFixture(fdef).setUserData(this);
-
         b2Body.setGravityScale(0);
+        move();
+    }
+
+    protected void move() {
         b2Body.setLinearVelocity(new Vector2(2.0f * (shooter.checkIsRunningRight()? 1 : -1) * (float)Math.cos(Math.toRadians(angle)), 2.0f * (float)Math.sin(Math.toRadians(angle))));
         Timer.schedule(new Timer.Task() {
             @Override
@@ -67,7 +74,11 @@ public class Bullet extends Sprite {
     }
 
     public void update() {
-        setPosition((b2Body.getPosition().x - getWidth() / 2) , b2Body.getPosition().y - getHeight() / 2);
+        setPosition((b2Body.getPosition().x - getWidth() / 2) + getOffset().x , (b2Body.getPosition().y - getHeight() / 2) + getOffset().y);
+    }
+
+    protected Vector2 getOffset() {
+        return new Vector2((shooter.checkIsRunningRight() ? 0.030f : -0.025f),-0.025f);
     }
 
     public Fighter getTarget() {
@@ -84,6 +95,9 @@ public class Bullet extends Sprite {
 
     public boolean checkIsFinished() {
         return isFinished;
+    }
+    public void setIsFinished(boolean isFinished) {
+        this.isFinished = isFinished;
     }
 
 
