@@ -1,0 +1,61 @@
+
+boss_three.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+boss3_died
+  rotate: false
+  xy: 1, 774
+  size: 896, 128
+  orig: 896, 128
+  offset: 0, 0
+  index: -1
+boss3_transform1
+  rotate: false
+  xy: 1, 647
+  size: 644, 125
+  orig: 644, 125
+  offset: 0, 0
+  index: -1
+boss3_call2
+  rotate: false
+  xy: 1, 518
+  size: 624, 127
+  orig: 624, 127
+  offset: 0, 0
+  index: -1
+boss3_call1
+  rotate: false
+  xy: 1, 389
+  size: 531, 127
+  orig: 531, 127
+  offset: 0, 0
+  index: -1
+boss3_transform2
+  rotate: false
+  xy: 1, 260
+  size: 515, 127
+  orig: 515, 127
+  offset: 0, 0
+  index: -1
+boss3_wing
+  rotate: false
+  xy: 1, 130
+  size: 512, 128
+  orig: 512, 128
+  offset: 0, 0
+  index: -1
+boss3_transform3
+  rotate: false
+  xy: 1, 1
+  size: 504, 127
+  orig: 504, 127
+  offset: 0, 0
+  index: -1
+boss3_melee
+  rotate: false
+  xy: 647, 644
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
