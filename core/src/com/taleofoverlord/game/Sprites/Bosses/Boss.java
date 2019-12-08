@@ -27,7 +27,7 @@ public abstract class Boss extends Fighter {
     public State currentState, previousState;
     public float stateTimer;
 
-    protected boolean isWait, isTransform;
+    protected boolean isWait, isTransform, isDead;
     protected boolean isSwordCreated, isBulletCreated;
     protected boolean isIgnoreBullet;
     protected float waitingTime;
@@ -57,7 +57,8 @@ public abstract class Boss extends Fighter {
 
         isWait = false;
         isTransform = false;
-        waitingTime = 3f;
+        isDead = false;
+        waitingTime = 2f;
 
         isSwordCreated = false;
         isBulletCreated = false;
@@ -73,12 +74,14 @@ public abstract class Boss extends Fighter {
     public abstract void update(float delta);
 
     protected void handleFlipingRegion(TextureRegion region) {
-        if(!checkInFrontOfPlayer()) {
-            region.flip(true, false);
-            super.setRunningRight(!checkIsRunningRight());
-        }
-        if(this.checkIsRunningRight() != region.isFlipX()) {
-            region.flip(true, false);
+        if(!isDead) {
+            if(!checkInFrontOfPlayer()) {
+                region.flip(true, false);
+                super.setRunningRight(!checkIsRunningRight());
+            }
+            if(this.checkIsRunningRight() != region.isFlipX()) {
+                region.flip(true, false);
+            }
         }
     }
 
@@ -149,7 +152,6 @@ public abstract class Boss extends Fighter {
         }, 0.2f);
     }
 
-//    public abstract  void ignoreDamage();
 
     public abstract boolean checkIsMelee();
     public abstract boolean checkIsShooting();
@@ -173,5 +175,12 @@ public abstract class Boss extends Fighter {
     }
     protected void setIsIgnoreBullet(boolean isIgnoreBullet) {
         this.isIgnoreBullet = isIgnoreBullet;
+    }
+
+    public boolean checkIsDead() {
+        return isDead;
+    }
+    public void setIsDead(boolean isDead) {
+        this.isDead = isDead;
     }
 }

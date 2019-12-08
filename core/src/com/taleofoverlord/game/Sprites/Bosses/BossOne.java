@@ -66,6 +66,14 @@ public class BossOne extends Boss {
         bossDead = animationFactory.getBossOneAnimationPack(AnimationFactory.AnimationType.BOSSDEAD);
     }
 
+    public void update(float delta) {
+        if(!isDead && !checkIsAction()) {
+            runPattern(super.getHealthPoint());
+        }
+        setPosition((b2Body.getPosition().x - getWidth() / 2) + getOffset(), b2Body.getPosition().y - getHeight() / 2);
+        setRegion(getFrame(delta));
+    }
+
 
     private State getTinyAttack() {
         int percent = randomPercent();
@@ -96,6 +104,7 @@ public class BossOne extends Boss {
 
     private State getPatternState() {
         State state = State.STANDING;
+        if(getPercentHP() <= 0) return State.DEAD;
         if(getPercentHP()>60) {
             setWaitingTime(2f);
             if(bigAttackCounter%10!=0) state = getTinyAttack();
@@ -149,7 +158,10 @@ public class BossOne extends Boss {
                     transform();
                     break;
                 }
-                case DEAD: bossDead.active();
+                case DEAD: {
+                    isDead = true;
+                    bossDead.active();
+                }
                 break;
             }
     }
@@ -175,7 +187,7 @@ public class BossOne extends Boss {
             case TRANSFORMING: return (TextureRegion) bossTransform.animation.getKeyFrame(stateTimer, false);
             case FINALBLINK: return (TextureRegion) bossFinalBlink.animation.getKeyFrame(stateTimer, true);
             case FINALULTIMATE: return (TextureRegion) bossFinalUltimate.animation.getKeyFrame(stateTimer, true);
-            case DEAD: return (TextureRegion) bossDead.animation.getKeyFrame(stateTimer, true);
+            case DEAD: return (TextureRegion) bossDead.animation.getKeyFrame(stateTimer, false);
             case STANDING:
             default: return !isTransform? bossStand : bossFinalStand;
         }
@@ -215,6 +227,8 @@ public class BossOne extends Boss {
 
     private void blink() {
         Vector2 blinkedPosition = getBlinkPosition();
+        if(blinkedPosition.x < 1.25f) blinkedPosition = new Vector2(1.25f, blinkedPosition.y);
+        else if(blinkedPosition.x > 6.65f) blinkedPosition = new Vector2(6.65f, blinkedPosition.y);
         b2Body.setTransform(blinkedPosition, 0);
     }
 
@@ -341,14 +355,6 @@ public class BossOne extends Boss {
         },1.25f);
     }
 
-    public void update(float delta) {
-        if(!checkIsAction()) {
-            runPattern(super.getHealthPoint());
-        }
-        setPosition((b2Body.getPosition().x - getWidth() / 2) + getOffset(), b2Body.getPosition().y - getHeight() / 2);
-        setRegion(getFrame(delta));
-    }
-
     public void cancelAction() {
         if(!isWait) bigAttackCounter++;
 //        bossShoot.finish();
@@ -356,7 +362,7 @@ public class BossOne extends Boss {
 //        bossThrow.finish();
 //        bossPrepareBlink.finish();
 //        bossBlink.finish();
-//        isWait = true;
+//        isCancel = true;
     }
 
     public boolean checkIsAction() {

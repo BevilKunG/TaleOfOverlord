@@ -14,8 +14,8 @@ public class Thorn extends Bullet {
     private boolean isRight, isShooted, isStop;
     private Player player;
     private Boss boss;
-    public Thorn(PlayScreen screen) {
-        super(screen, screen.getBoss(), screen.getPlayer());
+    public Thorn(PlayScreen screen, Fighter shooter, Fighter target) {
+        super(screen, shooter, target);
 
         thornRegion = AtlasFactory.getFactory().getBossTwoAtlas().findRegion("boss2_bullet");
         setRegion(thornRegion);

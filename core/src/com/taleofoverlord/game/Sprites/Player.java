@@ -27,8 +27,6 @@ public class Player extends Fighter {
     public State previousState;
 
     public float stateTimer;
-//    public float mana;
-//    private boolean isIncreseMana;
 
     private boolean isShooting, isBulletCreated;
     private boolean isSlashing, isSwordCreated;
@@ -122,12 +120,9 @@ public class Player extends Fighter {
 
         //Player Health Point
         super.setHealthPoint(TaleOfOverlord.PLAYER_MAX_HP);
-//        setMana(100);
-//        isIncreseMana = false;
     }
 
     public void update(float delta) {
-//        increaseMana();
         setPosition((b2Body.getPosition().x - getWidth() / 2) + getOffset(), b2Body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta));
     }
@@ -207,7 +202,6 @@ public class Player extends Fighter {
 
     public void shoot() {
         isShooting = true;
-//        decreaseMana(25);
         TaleOfOverlord.manager.get("audio/sounds/player_gunshot.wav", Sound.class).play();
         Timer.schedule(new Timer.Task() {
             @Override
@@ -220,7 +214,6 @@ public class Player extends Fighter {
 
     public void slash() {
         isSlashing = true;
-//        decreaseMana(20);
         TaleOfOverlord.manager.get("audio/sounds/player_slashing.mp3", Sound.class).play();
         Timer.schedule(new Timer.Task() {
             @Override
@@ -233,7 +226,6 @@ public class Player extends Fighter {
 
     public void punch() {
         isPunching = true;
-//        decreaseMana(5);
         TaleOfOverlord.manager.get("audio/sounds/player_punching.mp3", Sound.class).play();
         Timer.schedule(new Timer.Task() {
             @Override
@@ -334,32 +326,4 @@ public class Player extends Fighter {
             }
         }, 0.2f);
     }
-
-//    private void setMana(float mana) {
-//        this.mana = mana;
-//    }
-//    private void increaseMana() {
-//        if(mana < 100 && !isIncreseMana) {
-//            Timer.schedule(new Timer.Task() {
-//                @Override
-//                public void run() {
-//                    isIncreseMana = true;
-//                }
-//            },10f);
-//        }
-//        if(isIncreseMana) {
-//            if(mana + 10 < 100) mana += 10;
-//            else mana = 100;
-//            isIncreseMana = false;
-//        }
-//    }
-//    private void decreaseMana(float x) {
-//        mana -= x;
-//    }
-//    public float getMana() {
-//        return mana;
-//    }
-//    public boolean checkMana() {
-//        return mana > 0;
-//    }
 }
