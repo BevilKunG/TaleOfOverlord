@@ -15,13 +15,15 @@ public class AnimationFactory {
     private static AnimationPack bossTwoBlink, bossTwoShoot, bossTwoTransform, bossTwoFinalMelee,
             bossTwoDead, bossTwoFinalBlink;
 
+    private static AnimationPack bossThreeTransform, bossThreeShoot, bossThreeDead;
+
     public enum AnimationType { BOSSMELEE, BOSSSHOOT, BOSSPREPAREBLINK,
         BOSSBLINK, BOSSTHROW, BOSSTRANSFORM,
         BOSSFINALBLINK, BOSSFINALULTIMATE, BOSSDEAD,
         BOSSFINALMELEE}
     
     private AtlasFactory atlasFactory;
-    private TextureAtlas bossOneAtlas, bossTwoAtlas;
+    private TextureAtlas bossOneAtlas, bossTwoAtlas, bossThreeAtlas;
 
 
     private AnimationFactory() {
@@ -74,10 +76,23 @@ public class AnimationFactory {
         return null;
     }
 
+    public AnimationPack getBossThreeAnimationPack(AnimationType type) {
+        switch (type) {
+//            case BOSSBLINK: return bossTwoBlink;
+            case BOSSSHOOT: return bossThreeShoot;
+            case BOSSTRANSFORM: return bossThreeTransform;
+//            case BOSSFINALMELEE: return bossTwoFinalMelee;
+            case BOSSDEAD: return bossThreeDead;
+//            case BOSSFINALBLINK: return bossTwoFinalBlink;
+        }
+        return null;
+    }
+
     private void defineAtlas() {
          atlasFactory = AtlasFactory.getFactory();
          bossOneAtlas = atlasFactory.getBossOneAtlas();
          bossTwoAtlas = atlasFactory.getBossTwoAtlas();
+         bossThreeAtlas = atlasFactory.getBossThreeAtlas();
     }
     
     private void createBossMelee() {
@@ -107,6 +122,14 @@ public class AnimationFactory {
         }
         bossTwoShoot = new AnimationPack(new Animation(0.25f, frames));
         frames.clear();
+
+        // three
+        for(int i=0; i<4; i++) {
+            frames.add(new TextureRegion(bossThreeAtlas.findRegion("boss3_wing"), i * 128, 0, 128, 128));
+        }
+        bossThreeShoot = new AnimationPack(new Animation(0.25f, frames));
+        frames.clear();
+
 
     }
 
@@ -170,6 +193,20 @@ public class AnimationFactory {
         }
         bossTwoTransform = new AnimationPack(new Animation(0.5f, frames));
         frames.clear();
+
+        // three
+        for(int i=1; i<5; i++) {
+            frames.add(new TextureRegion(bossThreeAtlas.findRegion("boss3_transform1"), i * 128, 0, 128, 128));
+        }
+        for(int i=0; i<4; i++) {
+            frames.add(new TextureRegion(bossThreeAtlas.findRegion("boss3_transform2"), i * 128, 0, 128, 128));
+        }
+        for(int i=0; i<4; i++) {
+            frames.add(new TextureRegion(bossThreeAtlas.findRegion("boss3_transform3"), i * 128, 0, 128, 128));
+        }
+        bossThreeTransform = new AnimationPack(new Animation(0.5f, frames));
+        frames.clear();
+
     }
 
     private void createBossFinalBlink() {
@@ -215,6 +252,13 @@ public class AnimationFactory {
             frames.add(new TextureRegion(bossTwoAtlas.findRegion("boss2_died"), i * 128, 0, 128, 128));
         }
         bossTwoDead = new AnimationPack(new Animation(0.5f, frames));
+        frames.clear();
+
+        // three
+        for(int i=0; i<5; i++) {
+            frames.add(new TextureRegion(bossThreeAtlas.findRegion("boss3_died"), i * 128, 0, 128, 128));
+        }
+        bossThreeDead = new AnimationPack(new Animation(0.5f, frames));
         frames.clear();
     }
 

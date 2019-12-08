@@ -195,7 +195,7 @@ public class BossTwo extends Boss {
     private void blink() {
         Vector2 blinkedPosition = getBlinkPosition();
         if(blinkedPosition.x < 1.25f) blinkedPosition = new Vector2(1.25f, blinkedPosition.y);
-        else if(blinkedPosition.x > 6.65f) blinkedPosition = new Vector2(6.65f, blinkedPosition.y);
+        else if(blinkedPosition.x > 5.75f) blinkedPosition = new Vector2(5.75f, blinkedPosition.y);
         b2Body.setTransform(blinkedPosition, 0);
     }
 
@@ -234,13 +234,13 @@ public class BossTwo extends Boss {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
+                TaleOfOverlord.manager.get("audio/sounds/boss2_blink.mp3", Sound.class).play();
                 blink();
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
                         bossBlink.finish();
                         bossShoot.active();
-                        TaleOfOverlord.manager.get("audio/sounds/boss2_blink.mp3", Sound.class).play();
                         Timer.schedule(new Timer.Task() {
                             @Override
                             public void run() {
@@ -250,7 +250,7 @@ public class BossTwo extends Boss {
                             }
                         },0.8f);
                     }
-                },1f);
+                },2.75f);
 
             }
         }, 1f);
@@ -290,4 +290,5 @@ public class BossTwo extends Boss {
     public boolean checkIsShooting() {
         return bossShoot.isActive;
     }
+
 }

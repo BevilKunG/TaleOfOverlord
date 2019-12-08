@@ -34,7 +34,7 @@ public class TaleOfOverlord extends Game {
 	public void create () {
 		batch = new SpriteBatch();
 		manager = new AssetManager();
-		//manager.load("audio/music/bg_sound.mp3", Music.class);
+//		manager.load("audio/music/bg_sound.mp3", Music.class);
 		manager.load("audio/sounds/player_gunshot.wav", Sound.class);
 		manager.load("audio/sounds/boss_gunshot.wav", Sound.class);
 		manager.load("audio/sounds/player_slashing.mp3", Sound.class);
@@ -48,6 +48,7 @@ public class TaleOfOverlord extends Game {
 		manager.load("audio/sounds/boss2_shoot.mp3",Sound.class);
 		manager.load("audio/sounds/boss2_beforeShoot.mp3",Sound.class);
 		manager.load("audio/sounds/boss2_melee.mp3",Sound.class);
+		manager.load("audio/sounds/boss_barrier.mp3",Sound.class);
 
 		manager.finishLoading();
 

@@ -81,6 +81,10 @@ public class Bullet extends Sprite {
         return new Vector2((shooter.checkIsRunningRight() ? 0.030f : -0.025f),-0.025f);
     }
 
+    public void setBulletTexture(Texture bulletTexture) {
+        setTexture(bulletTexture);
+    }
+
     public Fighter getTarget() {
         return target;
     }

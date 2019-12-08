@@ -3,6 +3,7 @@ package com.taleofoverlord.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -55,6 +56,7 @@ public class PlayScreen implements Screen {
     private BossHandler bossHandler;
 
     public boolean isGameOver;
+    public Music gameWinMusic, gameLoseMusic;
 
    private Hud hud;
 
@@ -113,12 +115,40 @@ public class PlayScreen implements Screen {
         hud = new Hud(game.batch);
     }
 
+    public void reset() {
+        destroy();
+        isGameOver = false;
+
+
+        // Player and Boss
+        player = new Player( this);
+        bossHandler.reset();
+
+        bullets = new Array<Bullet>();
+        slashedSwords = new Array<SlashedSword>();
+        punches = new Array<Punch>();
+        thorns = new Array<Thorn>();
+    }
+
+    public void destroy() {
+        world.destroyBody(player.b2Body);
+        for(Bullet bullet: bullets) if(bullet != null) world.destroyBody(bullet.b2Body);
+        for(Thorn thorn: thorns) if(thorn != null) world.destroyBody(thorn.b2Body);
+        for(SlashedSword slashedSword: slashedSwords) if(slashedSword != null) world.destroyBody(slashedSword.b2Body);
+        for(Punch punch: punches) if(punch != null) world.destroyBody(punch.b2Body);
+    }
+
     @Override
     public void show() {
 
     }
 
     public void handleInput(float delta) {
+//        if(!isGameOver) {
+            if(Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+                reset();
+            }
+//        }
         if(!isGameOver && !player.checkIsHurt()) {
             boolean canMove = !player.checkisPunching() && !player.checkisSlashing() && !player.checkisShooting();
             if(canMove) {
@@ -208,6 +238,7 @@ public class PlayScreen implements Screen {
         if(!isGameOver && player.getHealthPoint()<= 0) {
             isGameOver = true;
             player.dead();
+            gameLose();
         }
     }
 
@@ -254,12 +285,11 @@ public class PlayScreen implements Screen {
         mapRenderer.render();
 
         // render Box2d Debug
-        b2dr.render(world, gameCam.combined);
+//        b2dr.render(world, gameCam.combined);
 
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
-//        boss.draw(game.batch);
         bossHandler.drawBoss(game.batch);
 
 
@@ -282,6 +312,16 @@ public class PlayScreen implements Screen {
 
     }
 
+    public void gameWin() {
+        Music music = Gdx.audio.newMusic(Gdx.files.internal("audio/music/victory_sound.mp3"));
+        music.play();
+    }
+
+    public void gameLose() {
+        Music music = Gdx.audio.newMusic(Gdx.files.internal("audio/music/lose_sound.mp3"));
+        music.play();
+    }
+
     public TextureAtlas getPlayerAtlas() {
         return playerAtlas;
     }
@@ -298,6 +338,10 @@ public class PlayScreen implements Screen {
 
     public Hud getHud() {
         return hud;
+    }
+
+    public boolean checkIsGameOver() {
+        return isGameOver;
     }
 
     @Override

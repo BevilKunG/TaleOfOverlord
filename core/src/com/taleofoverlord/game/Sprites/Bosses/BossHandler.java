@@ -1,5 +1,8 @@
 package com.taleofoverlord.game.Sprites.Bosses;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Timer;
@@ -19,6 +22,7 @@ public class BossHandler {
     private static Boss boss;
     private static int bossType;
     private boolean isReborn;
+    private static Music music;
 
     private BossHandler(PlayScreen screen) {
         this.screen = screen;
@@ -47,8 +51,13 @@ public class BossHandler {
         switch (bossType) {
             case 1: boss = new BossOne(screen); break;
             case 2: boss = new BossTwo(screen); break;
-            default: boss = new BossOne(screen);
+//            case 3: boss = new BossThree(screen); break;
+            default: {
+                boss = null;
+                screen.gameWin();
+            }
         }
+        playMusic(bossType);
     }
 
     private void destroyBoss() {
@@ -57,14 +66,34 @@ public class BossHandler {
     }
 
     public void drawBoss(SpriteBatch batch) {
+        if(boss == null) return;
         boss.draw(batch);
     }
 
     public void update(float delta) {
+        if(boss == null || screen.checkIsGameOver()) {
+            music.stop();
+            return;
+        }
         handleBossBullet();
         handleBossSword();
         handleHealth();
         boss.update(delta);
+    }
+
+    private void playMusic(int type) {
+        if(music != null) music.stop();
+        switch (bossType) {
+            case 1: music = Gdx.audio.newMusic(Gdx.files.internal("audio/music/bg_sound.mp3")); break;
+            case 2: music = Gdx.audio.newMusic(Gdx.files.internal("audio/music/bg_sound2.mp3")); break;
+//            case 3: music = Gdx.audio.newMusic(Gdx.files.internal("audio/music/bg_sound.mp3")); break;
+            default: {
+                boss = null;
+                if(music != null) music.stop();
+                screen.gameWin();
+            }
+        }
+        if(boss != null)music.play();
     }
 
     private void handleBossBullet() {
@@ -77,6 +106,10 @@ public class BossHandler {
 
             } else if(BossTwo.class.isAssignableFrom(boss.getClass())) {
                 screen.addThorn(new Thorn(screen, boss, player));
+            } else if(BossThree.class.isAssignableFrom(boss.getClass())) {
+                Bullet bullet = new Bullet(screen, boss, player);
+                bullet.setTexture(new Texture("bullet2.png"));
+                screen.addBullet(bullet);
             }
             boss.setIsBulletCreated(true);
         }
@@ -103,5 +136,12 @@ public class BossHandler {
             },3.5f);
         }
         screen.getHud().bossHealthBar.setValue(1f-((float)boss.getHealthPoint() / TaleOfOverlord.BOSS_MAX_HP));
+    }
+
+    public void reset() {
+        bossType = 1;
+        isReborn = false;
+        if(boss != null) world.destroyBody(boss.getB2Body());
+        createBoss();
     }
 }

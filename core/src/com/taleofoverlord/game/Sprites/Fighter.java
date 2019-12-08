@@ -1,5 +1,6 @@
 package com.taleofoverlord.game.Sprites;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -39,6 +40,10 @@ public abstract class Fighter extends Sprite {
 
     public boolean checkIsRunningRight() {
         return isRunningRight;
+    }
+
+    public void ignoreBullet() {
+        TaleOfOverlord.manager.get("audio/sounds/boss_barrier.mp3", Sound.class).play();
     }
 
     public abstract Vector2 getFrontPosition();

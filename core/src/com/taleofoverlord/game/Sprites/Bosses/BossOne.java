@@ -219,7 +219,7 @@ public class BossOne extends Boss {
     }
 
     private Vector2 getBlinkPosition() {
-        boolean isBlinkToFront = randomPercent()%2==0;
+        boolean isBlinkToFront = false;
         boolean isSpace = bossBlink.isActive || bossThrow.isActive;
         if(isBlinkToFront) return new Vector2(player.getFrontPosition().x + ((player.checkIsRunningRight()?1f:-1f) * (isSpace?1:0)), player.getFrontPosition().y);
         else return new Vector2(player.getBackPosition().x + ((player.checkIsRunningRight()?-1f:1f) * (isSpace?1:0)), player.getBackPosition().y);
@@ -228,7 +228,7 @@ public class BossOne extends Boss {
     private void blink() {
         Vector2 blinkedPosition = getBlinkPosition();
         if(blinkedPosition.x < 1.25f) blinkedPosition = new Vector2(1.25f, blinkedPosition.y);
-        else if(blinkedPosition.x > 6.65f) blinkedPosition = new Vector2(6.65f, blinkedPosition.y);
+        else if(blinkedPosition.x > 5.75f) blinkedPosition = new Vector2(5.75f, blinkedPosition.y);
         b2Body.setTransform(blinkedPosition, 0);
     }
 

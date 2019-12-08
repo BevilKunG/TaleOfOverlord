@@ -8,6 +8,7 @@ import com.taleofoverlord.game.Sprites.Bosses.BossOne;
 import com.taleofoverlord.game.Sprites.Weapons.Bullet;
 import com.taleofoverlord.game.Sprites.Weapons.Punch;
 import com.taleofoverlord.game.Sprites.Weapons.SlashedSword;
+import com.taleofoverlord.game.Sprites.Weapons.Thorn;
 import com.taleofoverlord.game.TaleOfOverlord;
 
 public class WorldContactListener implements ContactListener {
@@ -23,10 +24,13 @@ public class WorldContactListener implements ContactListener {
                 Bullet bullet = (Bullet) bulletFixture.getUserData();
                 Fighter target = (Fighter) targetFixture.getUserData();
                 if(bullet.getTarget() == target)  {
-                    if(checkCanAttack(target) && checkIgnoreBullet(target)) {
+                    if(checkCanAttack(target) && !checkIgnoreBullet(target)) {
                         target.decreaseHealthPoint(bullet.getDamage());
                         target.cancelAction();
                         target.recoil();
+                    }
+                    if(checkIgnoreBullet(target)) {
+                        target.ignoreBullet();
                     }
                     bullet.finish();
                 }
@@ -131,6 +135,6 @@ public class WorldContactListener implements ContactListener {
     }
 
     public boolean checkIgnoreBullet(Fighter target) {
-        return Boss.class.isAssignableFrom(target.getClass()) && !((Boss) target).checkIsIgnoreBullet();
+        return Boss.class.isAssignableFrom(target.getClass()) && ((Boss) target).checkIsIgnoreBullet();
     }
 }
