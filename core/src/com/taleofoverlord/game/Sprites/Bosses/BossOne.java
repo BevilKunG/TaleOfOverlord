@@ -220,6 +220,7 @@ public class BossOne extends Boss {
 
     private void transform() {
         bossTransform.active();
+        TaleOfOverlord.manager.get("audio/sounds/boss_transform.mp3", Sound.class).play();
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -233,6 +234,7 @@ public class BossOne extends Boss {
             @Override
             public void run() {
                 blink();
+                TaleOfOverlord.manager.get("audio/sounds/boss_blink.mp3", Sound.class).play();
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
@@ -329,6 +331,7 @@ public class BossOne extends Boss {
 
     private void throwBomb() {
         blink();
+        TaleOfOverlord.manager.get("audio/sounds/boss_granade.wav", Sound.class).play();
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {

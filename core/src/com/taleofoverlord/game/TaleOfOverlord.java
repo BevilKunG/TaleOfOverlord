@@ -41,6 +41,14 @@ public class TaleOfOverlord extends Game {
 		manager.load("audio/sounds/boss_melee.mp3", Sound.class);
 		manager.load("audio/sounds/player_punching.mp3", Sound.class);
 		manager.load("audio/sounds/boss_granade.wav",Sound.class);
+		manager.load("audio/sounds/boss_blink.mp3",Sound.class);
+		manager.load("audio/sounds/boss_transform.mp3",Sound.class);
+		manager.load("audio/sounds/boss2_transform.mp3",Sound.class);
+		manager.load("audio/sounds/boss2_blink.mp3",Sound.class);
+		manager.load("audio/sounds/boss2_shoot.mp3",Sound.class);
+		manager.load("audio/sounds/boss2_beforeShoot.mp3",Sound.class);
+		manager.load("audio/sounds/boss2_melee.mp3",Sound.class);
+
 		manager.finishLoading();
 
 		setScreen(new PlayScreen(this));

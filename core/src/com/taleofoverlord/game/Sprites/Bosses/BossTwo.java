@@ -188,13 +188,14 @@ public class BossTwo extends Boss {
             public void run() {
                 bossBlink.finish();
                 bossShoot.active();
-//                TaleOfOverlord.manager.get("audio/sounds/boss_gunshot.wav", Sound.class).play();
+                TaleOfOverlord.manager.get("audio/sounds/boss2_beforeShoot.mp3", Sound.class).play();
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
                         bossShoot.finish();
                         waitAction();
                                 setIsBulletCreated(false);
+                        TaleOfOverlord.manager.get("audio/sounds/boss2_shoot.mp3", Sound.class).play();
                     }
                 },0.8f);
             }
@@ -203,6 +204,7 @@ public class BossTwo extends Boss {
 
     private void transform() {
         bossTransform.active();
+        TaleOfOverlord.manager.get("audio/sounds/boss2_transform.mp3", Sound.class).play();
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -221,7 +223,7 @@ public class BossTwo extends Boss {
                     public void run() {
                         bossBlink.finish();
                         bossShoot.active();
-//                        TaleOfOverlord.manager.get("audio/sounds/boss_gunshot.wav", Sound.class).play();
+                        TaleOfOverlord.manager.get("audio/sounds/boss2_blink.mp3", Sound.class).play();
                         Timer.schedule(new Timer.Task() {
                             @Override
                             public void run() {
@@ -247,7 +249,7 @@ public class BossTwo extends Boss {
                     public void run() {
                         bossFinalBlink.finish();
                         bossFinalMelee.active();
-//                        TaleOfOverlord.manager.get("audio/sounds/boss_melee.mp3", Sound.class).play();
+                        TaleOfOverlord.manager.get("audio/sounds/boss2_melee.mp3", Sound.class).play();
                         Timer.schedule(new Timer.Task() {
                             @Override
                             public void run() {
