@@ -56,7 +56,7 @@ public class PlayScreen implements Screen {
     private BossHandler bossHandler;
 
     public boolean isGameOver;
-    public Music gameWinMusic, gameLoseMusic;
+    public Music music;
 
    private Hud hud;
 
@@ -117,6 +117,7 @@ public class PlayScreen implements Screen {
 
     public void reset() {
         destroy();
+        if(music != null) music.stop();
         isGameOver = false;
 
 
@@ -313,12 +314,12 @@ public class PlayScreen implements Screen {
     }
 
     public void gameWin() {
-        Music music = Gdx.audio.newMusic(Gdx.files.internal("audio/music/victory_sound.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("audio/music/victory_sound.mp3"));
         music.play();
     }
 
     public void gameLose() {
-        Music music = Gdx.audio.newMusic(Gdx.files.internal("audio/music/lose_sound.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("audio/music/lose_sound.mp3"));
         music.play();
     }
 

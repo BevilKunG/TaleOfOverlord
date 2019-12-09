@@ -29,7 +29,7 @@ public class BossHandler {
         world = screen.getWorld();
         player = screen.getPlayer();
 
-        bossType = 1;
+        bossType = 2;
         isReborn = false;
 
         createBoss();
@@ -54,6 +54,7 @@ public class BossHandler {
 //            case 3: boss = new BossThree(screen); break;
             default: {
                 boss = null;
+//                destroyBoss();
                 screen.gameWin();
             }
         }
@@ -62,6 +63,7 @@ public class BossHandler {
 
     private void destroyBoss() {
         world.destroyBody(boss.getB2Body());
+        boss.reset();
         boss = null;
     }
 
@@ -72,7 +74,7 @@ public class BossHandler {
 
     public void update(float delta) {
         if(boss == null || screen.checkIsGameOver()) {
-            music.stop();
+            if(music != null) music.stop();
             return;
         }
         handleBossBullet();
@@ -130,8 +132,10 @@ public class BossHandler {
                 public void run() {
                     bossType++;
                     createBoss();
-                    boss.setIsDead(false);
-                    isReborn = false;
+                    if(boss != null) {
+                        boss.setIsDead(false);
+                        isReborn = false;
+                    }
                 }
             },3.5f);
         }
@@ -139,9 +143,14 @@ public class BossHandler {
     }
 
     public void reset() {
+//        music.stop();
         bossType = 1;
         isReborn = false;
-        if(boss != null) world.destroyBody(boss.getB2Body());
+        if(boss != null) {
+            boss.reset();
+            world.destroyBody(boss.getB2Body());
+            boss = null;
+        }
         createBoss();
     }
 }

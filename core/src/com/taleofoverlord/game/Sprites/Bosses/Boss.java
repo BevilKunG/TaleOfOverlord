@@ -152,6 +152,25 @@ public abstract class Boss extends Fighter {
         }, 0.2f);
     }
 
+    public void reset() {
+        currentPosition = new Vector2(512 / TaleOfOverlord.PPM, 64 / TaleOfOverlord.PPM);
+
+        currentState = State.STANDING;
+        previousState = State.STANDING;
+        stateTimer = 0;
+
+        setRegion(bossStand);
+        setBounds(0, 0, 64 / TaleOfOverlord.PPM, 64 / TaleOfOverlord.PPM);
+
+        isWait = false;
+        isTransform = false;
+        isDead = false;
+        waitingTime = 2f;
+
+        isSwordCreated = false;
+        isBulletCreated = false;
+        isIgnoreBullet = false;
+    }
 
     public abstract boolean checkIsMelee();
     public abstract boolean checkIsShooting();
