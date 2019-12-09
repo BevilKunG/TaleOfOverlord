@@ -4,8 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -16,6 +19,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.taleofoverlord.game.Scenes.Hud;
@@ -59,6 +63,9 @@ public class PlayScreen implements Screen {
     public Music music;
 
    private Hud hud;
+
+   public GameOver gameOver;
+
 
     public PlayScreen(TaleOfOverlord game) {
         this.game = game;
@@ -113,6 +120,9 @@ public class PlayScreen implements Screen {
 
         // Hud
         hud = new Hud(game.batch);
+
+        gameOver = new GameOver(this);
+
     }
 
     public void reset() {
@@ -237,7 +247,13 @@ public class PlayScreen implements Screen {
     public void handleHealth() {
         hud.playerHealthBar.setValue(((float)player.getHealthPoint() / TaleOfOverlord.PLAYER_MAX_HP));
         if(!isGameOver && player.getHealthPoint()<= 0) {
-            isGameOver = true;
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    isGameOver = true;
+                }
+            },2);
+
             player.dead();
             gameLose();
         }
@@ -258,6 +274,8 @@ public class PlayScreen implements Screen {
         gameCam.position.x = player.b2Body.getPosition().x;
         gameCam.update();
         mapRenderer.setView(gameCam);
+
+        gameOver.update();
 
     }
 
@@ -304,6 +322,10 @@ public class PlayScreen implements Screen {
                 thorn.draw(game.batch);
         }
 
+        if(isGameOver==true) {
+            gameOver.draw(game.batch);
+        }
+
         game.batch.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -341,6 +363,10 @@ public class PlayScreen implements Screen {
         return hud;
     }
 
+    public OrthographicCamera getGameCam(){
+        return gameCam;
+    }
+
     public boolean checkIsGameOver() {
         return isGameOver;
     }
@@ -369,5 +395,6 @@ public class PlayScreen implements Screen {
     public void dispose() {
 
     }
+
 
 }
